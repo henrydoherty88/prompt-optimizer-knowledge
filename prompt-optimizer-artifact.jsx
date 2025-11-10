@@ -15,6 +15,8 @@ const PromptOptimizer = () => {
   const [analytics, setAnalytics] = useState(null);
   const [showLibrary, setShowLibrary] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [optimizationStages, setOptimizationStages] = useState([]);
+  const [isOptimizing, setIsOptimizing] = useState(false);
 
   const REPO_BASE = 'https://raw.githubusercontent.com/henrydoherty88/prompt-optimizer-knowledge/main/';
 
@@ -401,115 +403,755 @@ const PromptOptimizer = () => {
     return recs;
   };
 
-  // Optimization Engine
-  const optimizePrompt = () => {
+  // ═══════════════════════════════════════════════════════════════════
+  // MASTER-LEVEL OPTIMIZATION ENGINE - 7 Stage Processing Pipeline
+  // ═══════════════════════════════════════════════════════════════════
+
+  const optimizePrompt = async () => {
     if (!inputPrompt || !knowledgeBase) return;
 
+    setIsOptimizing(true);
+    const stages = [];
+    const techniques = [];
     const tool = knowledgeBase.tools[selectedTool];
     const framework = knowledgeBase.frameworks[selectedFramework];
-    const techniques = [];
 
-    let optimized = inputPrompt;
+    try {
+      // STAGE 1: Intent Analysis
+      const stage1 = await stage1_IntentAnalysis(inputPrompt, tool);
+      stages.push({ name: 'Intent Analysis', ...stage1 });
 
-    // Apply Specificity
-    if (analysis.scores.specificity < 70) {
-      techniques.push('specificity');
-      optimized = applySpecificity(optimized);
+      // STAGE 2: Gap Detection
+      const stage2 = stage2_GapDetection(inputPrompt, stage1, tool, framework);
+      stages.push({ name: 'Gap Detection', ...stage2 });
+
+      // STAGE 3: Context Injection
+      const stage3 = stage3_ContextInjection(inputPrompt, stage1, stage2);
+      stages.push({ name: 'Context Injection', ...stage3 });
+      if (stage3.applied) techniques.push('context_injection');
+
+      // STAGE 4: Framework Application
+      const stage4 = stage4_FrameworkApplication(stage3.output, framework, stage1, tool);
+      stages.push({ name: 'Framework Application', ...stage4 });
+      if (stage4.applied) techniques.push('framework_structure');
+
+      // STAGE 5: Tool Optimization
+      const stage5 = stage5_ToolOptimization(stage4.output, tool, stage1);
+      stages.push({ name: 'Tool Optimization', ...stage5 });
+      if (stage5.applied) techniques.push('tool_specific');
+
+      // STAGE 6: Quality Enhancement
+      const stage6 = stage6_QualityEnhancement(stage5.output, stage1, stage2);
+      stages.push({ name: 'Quality Enhancement', ...stage6 });
+      if (stage6.applied) techniques.push('quality_enhancement');
+
+      // STAGE 7: Final Polish
+      const stage7 = stage7_FinalPolish(stage6.output, inputPrompt);
+      stages.push({ name: 'Final Polish', ...stage7 });
+      if (stage7.applied) techniques.push('final_polish');
+
+      // Validation
+      const validation = validateOptimization(inputPrompt, stage7.output, stage1);
+      stages.push({ name: 'Validation', ...validation });
+
+      setOptimizationStages(stages);
+      setOptimizedPrompt(stage7.output);
+      setAppliedTechniques(techniques);
+    } catch (error) {
+      console.error('Optimization error:', error);
+    } finally {
+      setIsOptimizing(false);
     }
-
-    // Apply Negative → Positive
-    if (analysis.scores.errorResistance < 70) {
-      techniques.push('negative_to_positive');
-      optimized = applyNegativeToPositive(optimized);
-    }
-
-    // Apply Framework Structure
-    if (analysis.scores.frameworkAdherence < 70) {
-      techniques.push('framework_structure');
-      optimized = applyFramework(optimized, framework);
-    }
-
-    // Apply Tool Alignment
-    if (analysis.scores.toolAlignment < 70) {
-      techniques.push('tool_alignment');
-      optimized = applyToolTemplate(optimized, tool);
-    }
-
-    // Apply Structure
-    if (analysis.scores.structure < 70) {
-      techniques.push('structured_output');
-      optimized = applyStructure(optimized);
-    }
-
-    // Apply Role Prompting
-    if (tool.techniques?.includes('role_prompting') && !optimized.toLowerCase().includes('you are')) {
-      techniques.push('role_prompting');
-      optimized = applyRolePrompting(optimized, tool);
-    }
-
-    setOptimizedPrompt(optimized);
-    setAppliedTechniques(techniques);
   };
 
-  const applySpecificity = (prompt) => {
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 1: Intent Analysis - Understand what user REALLY wants
+  // ═══════════════════════════════════════════════════════════════════
+  const stage1_IntentAnalysis = (prompt, tool) => {
+    const intent = {
+      domain: detectDomain(prompt, tool),
+      complexity: detectComplexity(prompt),
+      primaryAction: extractPrimaryAction(prompt),
+      implicitGoal: inferImplicitGoal(prompt, tool),
+      audience: detectAudience(prompt),
+      outputType: detectOutputType(prompt, tool)
+    };
+
+    return {
+      result: intent,
+      applied: true,
+      description: `Detected ${intent.domain} task with ${intent.complexity} complexity. Primary action: ${intent.primaryAction}.`
+    };
+  };
+
+  const detectDomain = (prompt, tool) => {
+    const domains = {
+      technical: /(code|software|program|api|database|algorithm|debug|implement|function|class)/i,
+      creative: /(design|image|art|creative|visual|generate|midjourney|dalle|aesthetic|style)/i,
+      business: /(report|analysis|strategy|market|stakeholder|roi|metric|revenue|kpi)/i,
+      research: /(research|analyze|study|investigate|explore|synthesize|compare|evaluate)/i,
+      writing: /(write|article|blog|content|copy|email|document|draft)/i,
+      personal: /(help|advice|guide|learn|understand|explain|teach)/i
+    };
+
+    for (const [domain, pattern] of Object.entries(domains)) {
+      if (pattern.test(prompt)) return domain;
+    }
+
+    // Fallback to tool category
+    return tool.category || 'general';
+  };
+
+  const detectComplexity = (prompt) => {
+    const words = prompt.split(/\s+/).length;
+    const hasStructure = /:/g.test(prompt) || /\n/g.test(prompt);
+    const hasSpecifics = /\d+/g.test(prompt);
+    const hasMultipleRequirements = (prompt.match(/and|also|additionally|furthermore/gi) || []).length;
+
+    let score = 0;
+    if (words > 50) score += 2;
+    else if (words > 20) score += 1;
+    if (hasStructure) score += 1;
+    if (hasSpecifics) score += 1;
+    if (hasMultipleRequirements > 2) score += 2;
+
+    if (score >= 4) return 'high';
+    if (score >= 2) return 'medium';
+    return 'low';
+  };
+
+  const extractPrimaryAction = (prompt) => {
+    const actionVerbs = {
+      'create': /(create|build|make|develop|generate|design|construct)/i,
+      'analyze': /(analyze|examine|evaluate|assess|review|investigate)/i,
+      'write': /(write|compose|draft|author|document)/i,
+      'explain': /(explain|describe|clarify|teach|show|demonstrate)/i,
+      'optimize': /(optimize|improve|enhance|refine|upgrade)/i,
+      'fix': /(fix|debug|resolve|repair|correct)/i,
+      'plan': /(plan|strategy|roadmap|outline|blueprint)/i
+    };
+
+    for (const [action, pattern] of Object.entries(actionVerbs)) {
+      if (pattern.test(prompt)) return action;
+    }
+
+    return 'execute';
+  };
+
+  const inferImplicitGoal = (prompt, tool) => {
+    // Infer what the user is REALLY trying to accomplish
+    const words = prompt.toLowerCase();
+
+    if (words.includes('help') && words.length < 50) {
+      return 'Seeking guidance on a specific task or problem';
+    }
+    if (tool.category === 'creative' && !/(style|mood|aesthetic|look)/i.test(prompt)) {
+      return 'Create visually appealing output (style/aesthetic not specified)';
+    }
+    if (tool.category === 'coding' && !/(test|validation)/i.test(prompt)) {
+      return 'Build functional code (testing requirements not specified)';
+    }
+    if (tool.category === 'research' && !/(timeframe|sources)/i.test(prompt)) {
+      return 'Gather comprehensive information (timeframe/sources not specified)';
+    }
+
+    return 'Accomplish stated task with high quality';
+  };
+
+  const detectAudience = (prompt) => {
+    if (/(beginner|novice|new to|learning)/i.test(prompt)) return 'beginners';
+    if (/(expert|advanced|professional|technical)/i.test(prompt)) return 'experts';
+    if (/(team|stakeholder|client|user)/i.test(prompt)) return 'team/stakeholders';
+    if (/(general|public|anyone)/i.test(prompt)) return 'general public';
+    return 'not specified';
+  };
+
+  const detectOutputType = (prompt, tool) => {
+    if (/(code|function|class|script)/i.test(prompt)) return 'code';
+    if (/(report|document|article|paper)/i.test(prompt)) return 'document';
+    if (/(image|visual|graphic|design)/i.test(prompt)) return 'image';
+    if (/(list|table|chart|data)/i.test(prompt)) return 'structured data';
+    if (/(json|xml|yaml)/i.test(prompt)) return 'structured format';
+    return tool.category === 'creative' ? 'image' : 'text';
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 2: Gap Detection - Find what's missing
+  // ═══════════════════════════════════════════════════════════════════
+  const stage2_GapDetection = (prompt, intent, tool, framework) => {
+    const gaps = [];
+
+    // Check for missing elements
+    if (!/(metric|measure|number|percentage|\d+)/i.test(prompt)) {
+      gaps.push({ type: 'metrics', severity: 'high', fix: 'Add specific metrics or success criteria' });
+    }
+
+    if (!/(deadline|timeline|by|before|timeframe|duration)/i.test(prompt) && intent.domain !== 'creative') {
+      gaps.push({ type: 'timeline', severity: 'medium', fix: 'Add timeline or deadline' });
+    }
+
+    if (!/(format|output|structure|style)/i.test(prompt)) {
+      gaps.push({ type: 'output_format', severity: 'high', fix: 'Specify exact output format' });
+    }
+
+    if (!/(example|instance|like|such as)/i.test(prompt) && intent.complexity !== 'low') {
+      gaps.push({ type: 'examples', severity: 'medium', fix: 'Add concrete examples' });
+    }
+
+    if (!/(constraint|limit|must|should not|requirement)/i.test(prompt)) {
+      gaps.push({ type: 'constraints', severity: 'medium', fix: 'Add constraints or boundaries' });
+    }
+
+    // Check for tool-specific gaps
+    if (tool.mustInclude) {
+      tool.mustInclude.forEach(element => {
+        if (!prompt.toLowerCase().includes(element.toLowerCase())) {
+          gaps.push({ type: element, severity: 'high', fix: `Add ${element} (required for ${tool.name})` });
+        }
+      });
+    }
+
+    // Check for framework components
+    if (framework.components) {
+      framework.components.forEach(component => {
+        if (!prompt.toLowerCase().includes(component.toLowerCase())) {
+          gaps.push({ type: component, severity: 'medium', fix: `Add ${component} (${framework.name} component)` });
+        }
+      });
+    }
+
+    // Detect negative constraints
+    const negatives = prompt.match(/(don't|do not|avoid|never|no)/gi) || [];
+    if (negatives.length > 0) {
+      gaps.push({ type: 'negative_constraints', severity: 'high', fix: 'Convert negative constraints to positive affirmatives' });
+    }
+
+    return {
+      result: gaps,
+      applied: true,
+      description: `Found ${gaps.length} gaps: ${gaps.slice(0, 3).map(g => g.type).join(', ')}${gaps.length > 3 ? '...' : ''}`
+    };
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 3: Context Injection - Add domain expertise
+  // ═══════════════════════════════════════════════════════════════════
+  const stage3_ContextInjection = (prompt, intent, gaps) => {
     let enhanced = prompt;
+    const additions = [];
 
-    // Add template for metrics if missing
-    if (!/\d+/.test(prompt)) {
-      enhanced += '\n\nMetrics: [Add specific numbers, percentages, or quantities]';
+    // Add role/expertise context
+    const role = getRoleForDomain(intent.domain, intent.result.primaryAction);
+    if (role && !prompt.toLowerCase().includes('you are')) {
+      enhanced = `You are ${role}.\n\n${enhanced}`;
+      additions.push('role context');
     }
 
-    // Add template for timeline if missing
-    if (!/(deadline|timeline|by|before)/i.test(prompt)) {
-      enhanced += '\nTimeline: [Specify timeframe or deadline]';
+    // Add purpose/use case if unclear
+    if (prompt.split(/\s+/).length < 20) {
+      enhanced += `\n\nPurpose: ${intent.result.implicitGoal}`;
+      additions.push('purpose clarification');
     }
 
-    return enhanced;
+    // Add audience specification if missing
+    if (intent.result.audience === 'not specified' && intent.domain !== 'personal') {
+      enhanced += `\nTarget Audience: [Specify who will use/read this]`;
+      additions.push('audience specification');
+    }
+
+    return {
+      output: enhanced,
+      applied: additions.length > 0,
+      description: `Added: ${additions.join(', ') || 'none needed'}`
+    };
   };
 
-  const applyNegativeToPositive = (prompt) => {
-    return prompt
-      .replace(/don't be vague/gi, 'be specific')
-      .replace(/don't use/gi, 'use instead')
-      .replace(/avoid/gi, 'focus on')
-      .replace(/don't/gi, 'ensure you')
-      .replace(/never/gi, 'always');
+  const getRoleForDomain = (domain, action) => {
+    const roles = {
+      technical: {
+        create: 'an expert software engineer with 10+ years of experience in system design and best practices',
+        fix: 'a senior debugging specialist and code quality expert',
+        analyze: 'a technical architect specializing in code review and optimization'
+      },
+      creative: {
+        create: 'an award-winning creative director with expertise in visual design and composition',
+        design: 'a professional designer specializing in aesthetics and user experience'
+      },
+      business: {
+        analyze: 'a senior business analyst with expertise in data-driven decision making',
+        create: 'a strategic business consultant with deep market analysis experience'
+      },
+      research: {
+        analyze: 'a research specialist with expertise in systematic literature review and synthesis',
+        create: 'an experienced researcher skilled in comprehensive information gathering and analysis'
+      },
+      writing: {
+        write: 'a professional writer and content strategist with expertise in clear, engaging communication',
+        create: 'an experienced content creator specializing in audience-targeted messaging'
+      }
+    };
+
+    return roles[domain]?.[action] || `a ${domain} expert`;
   };
 
-  const applyFramework = (prompt, framework) => {
-    if (!framework) return prompt;
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 4: Framework Application - Intelligently map to framework
+  // ═══════════════════════════════════════════════════════════════════
+  const stage4_FrameworkApplication = (prompt, framework, intent, tool) => {
+    if (!framework || !framework.components) return { output: prompt, applied: false };
 
-    let structured = `Using ${framework.name} Framework:\n\n`;
+    let structured = '';
+    const components = framework.components;
 
-    framework.components?.forEach((component, i) => {
-      structured += `${component}: [${prompt.slice(i * 20, (i + 1) * 20) || 'Define ' + component}]\n`;
+    // Intelligently fill each framework component
+    if (framework.name === 'CRISPE') {
+      structured = applyCRISPE(prompt, intent, tool);
+    } else if (framework.name === 'RISEN') {
+      structured = applyRISEN(prompt, intent, tool);
+    } else if (framework.name === 'CO-STAR') {
+      structured = applyCOSTAR(prompt, intent, tool);
+    } else if (framework.name === 'RTF') {
+      structured = applyRTF(prompt, intent, tool);
+    } else if (framework.name === 'STAR') {
+      structured = applySTAR(prompt, intent, tool);
+    } else if (framework.name === 'APE') {
+      structured = applyAPE(prompt, intent);
+    } else if (framework.name === 'DEPTH') {
+      structured = applyDEPTH(prompt, intent);
+    } else {
+      // Generic framework application
+      structured = `Using ${framework.name} Framework:\n\n`;
+      components.forEach(comp => {
+        structured += `${comp}: [Define ${comp.toLowerCase()} here]\n`;
+      });
+      structured += `\nTask: ${prompt}`;
+    }
+
+    return {
+      output: structured,
+      applied: true,
+      description: `Applied ${framework.name} framework with intelligent component filling`
+    };
+  };
+
+  const applyCRISPE = (prompt, intent, tool) => {
+    const role = getRoleForDomain(intent.result.domain, intent.result.primaryAction);
+
+    return `Context: ${intent.result.implicitGoal} for ${intent.result.audience === 'not specified' ? 'appropriate audience' : intent.result.audience}.
+
+Role: ${role}
+
+Instruction: ${prompt}
+
+Specification:
+- Output Format: ${intent.result.outputType}
+- Quality Level: Professional-grade, production-ready
+- Constraints: [Add any specific constraints or requirements]
+
+Performance Criteria:
+- Success looks like: [Define specific success metrics]
+- Validation: [How to verify the output meets requirements]
+
+Example: [Provide a brief example of desired output if applicable]`;
+  };
+
+  const applyRISEN = (prompt, intent, tool) => {
+    const role = getRoleForDomain(intent.result.domain, intent.result.primaryAction);
+
+    return `Role: ${role}
+
+Instruction: ${prompt}
+
+Steps:
+1. [First step to accomplish this]
+2. [Second step]
+3. [Continue with necessary steps]
+4. [Final validation/delivery step]
+
+Examples:
+- Example 1: [Concrete example of similar task]
+- Example 2: [Another example showing variation]
+
+Nuance & Edge Cases:
+- Edge Case 1: [Potential edge case and how to handle]
+- Edge Case 2: [Another consideration]
+- Constraints: [Any boundaries or limitations to respect]`;
+  };
+
+  const applyCOSTAR = (prompt, intent, tool) => {
+    return `Context: ${intent.result.implicitGoal}
+
+Objective: ${prompt}
+
+Style: ${intent.result.domain === 'creative' ? 'Creative and visually engaging' : intent.result.domain === 'technical' ? 'Technical and precise' : 'Professional and clear'}
+
+Tone: ${intent.result.domain === 'business' ? 'Professional and data-driven' : intent.result.domain === 'creative' ? 'Inspiring and innovative' : 'Informative and helpful'}
+
+Audience: ${intent.result.audience === 'not specified' ? '[Define target audience]' : intent.result.audience}
+
+Response Format:
+- Type: ${intent.result.outputType}
+- Structure: [Specify exact structure]
+- Length: [Specify desired length]
+- Deliverables: [List concrete outputs]`;
+  };
+
+  const applyRTF = (prompt, intent, tool) => {
+    const role = getRoleForDomain(intent.result.domain, intent.result.primaryAction);
+
+    return `You are ${role}.
+
+Task: ${prompt}
+
+Additional Context: ${intent.result.implicitGoal}
+
+Output Format:
+- Deliver as ${intent.result.outputType}
+- Include: [Specify required sections/components]
+- Style: ${intent.result.domain === 'technical' ? 'Technical and precise' : 'Clear and professional'}`;
+  };
+
+  const applySTAR = (prompt, intent, tool) => {
+    return `Situation: ${intent.result.implicitGoal}
+
+Task: ${prompt}
+
+Action Required:
+1. [First action step]
+2. [Second action step]
+3. [Continue with necessary actions]
+
+Result Expected:
+- ${intent.result.outputType} that ${intent.result.primaryAction}s [specific outcome]
+- Quality: Professional-grade
+- Format: [Specify exact format]`;
+  };
+
+  const applyAPE = (prompt, intent) => {
+    return `Action: ${prompt}
+
+Purpose: ${intent.result.implicitGoal}
+
+Expectation: Deliver ${intent.result.outputType} that meets professional standards, formatted appropriately for ${intent.result.audience === 'not specified' ? 'the intended audience' : intent.result.audience}.`;
+  };
+
+  const applyDEPTH = (prompt, intent) => {
+    return `Perspectives to Consider:
+1. Primary Stakeholder: ${intent.result.audience === 'not specified' ? '[Define primary audience]' : intent.result.audience}
+2. Technical Perspective: ${intent.result.domain === 'technical' ? 'Implementation feasibility and best practices' : 'Technical requirements and constraints'}
+3. Business Perspective: ROI, efficiency, and strategic alignment
+
+Metrics for Success:
+- [Quantifiable metric 1]
+- [Quantifiable metric 2]
+- [Quality metric]
+
+Context: ${intent.result.implicitGoal}
+
+Task Breakdown:
+${prompt}
+
+Decompose into:
+1. [Sub-task 1]
+2. [Sub-task 2]
+3. [Sub-task 3]
+
+Human Feedback Loop:
+- Iterate on [specific aspect] based on feedback
+- Validate [key assumptions] before proceeding`;
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 5: Tool Optimization - Tool-specific enhancements
+  // ═══════════════════════════════════════════════════════════════════
+  const stage5_ToolOptimization = (prompt, tool, intent) => {
+    let optimized = prompt;
+    const enhancements = [];
+
+    // Claude-specific optimizations
+    if (tool.name.includes('Claude')) {
+      if (!prompt.includes('<') && intent.complexity !== 'low') {
+        optimized += `\n\n<instructions>
+${prompt.includes('step') ? 'Follow the steps above systematically.' : 'Approach this task systematically.'}
+</instructions>`;
+        enhancements.push('XML structure');
+      }
+
+      if (intent.result.primaryAction === 'analyze' && !prompt.toLowerCase().includes('think')) {
+        optimized += `\n\nLet's think through this step by step:`;
+        enhancements.push('chain-of-thought');
+      }
+    }
+
+    // ChatGPT-specific optimizations
+    if (tool.name.includes('ChatGPT')) {
+      if (intent.result.outputType === 'structured data' && !prompt.toLowerCase().includes('json')) {
+        optimized += `\n\nProvide response in JSON format with proper schema.`;
+        enhancements.push('JSON mode hint');
+      }
+    }
+
+    // Midjourney-specific optimizations
+    if (tool.name.includes('Midjourney')) {
+      const mjEnhanced = optimizeMidjourney(prompt);
+      if (mjEnhanced !== prompt) {
+        optimized = mjEnhanced;
+        enhancements.push('Midjourney parameters');
+      }
+    }
+
+    // DALL-E specific optimizations
+    if (tool.name.includes('DALL-E')) {
+      if (!/(lighting|camera|composition|style)/i.test(prompt)) {
+        optimized += `\n\nAdditional Details:
+- Lighting: [Specify lighting setup]
+- Camera: [Specify angle/perspective]
+- Composition: [Specify framing]
+- Style: [Specify artistic style]`;
+        enhancements.push('visual details');
+      }
+    }
+
+    // Cursor AI optimizations
+    if (tool.name.includes('Cursor')) {
+      if (!prompt.includes('@')) {
+        optimized += `\n\nRelevant Files: @[specify files/directories]`;
+        enhancements.push('@ file references');
+      }
+    }
+
+    // Research tool optimizations
+    if (tool.category === 'research') {
+      if (!/(2024|2025|recent)/i.test(prompt)) {
+        optimized += `\n\nTimeframe: [Specify timeframe, e.g., "2024-2025" or "last 6 months"]`;
+        enhancements.push('timeframe');
+      }
+
+      if (!/(source|citation|reference)/i.test(prompt)) {
+        optimized += `\nSources: [Specify preferred source types: academic papers, industry reports, etc.]`;
+        enhancements.push('source specification');
+      }
+    }
+
+    // Code tool optimizations
+    if (tool.category === 'coding') {
+      if (!/(test|validation|error)/i.test(prompt)) {
+        optimized += `\n\nRequirements:
+- Include error handling
+- Add input validation
+- Write tests for key functionality
+- Follow best practices for ${intent.result.domain}`;
+        enhancements.push('coding best practices');
+      }
+
+      if (!/(language|version|framework)/i.test(prompt)) {
+        optimized += `\nTech Stack: [Specify language, version, frameworks]`;
+        enhancements.push('tech stack specification');
+      }
+    }
+
+    return {
+      output: optimized,
+      applied: enhancements.length > 0,
+      description: `Tool-specific: ${enhancements.join(', ') || 'none needed'}`
+    };
+  };
+
+  const optimizeMidjourney = (prompt) => {
+    let optimized = prompt;
+
+    // Ensure subject is first
+    const words = prompt.split(/\s+/);
+
+    // Add parameters if missing
+    if (!prompt.includes('--ar')) {
+      optimized += ' --ar 16:9';
+    }
+
+    if (!prompt.includes('--s')) {
+      // Detect if it's artistic or realistic
+      const artistic = /(art|painting|illustration|creative|fantasy)/i.test(prompt);
+      optimized += artistic ? ' --s 750' : ' --s 250';
+    }
+
+    if (!prompt.includes('--no') && words.length > 5) {
+      optimized += ' --no blur, watermark, text';
+    }
+
+    // Add :: separators if there are multiple concepts
+    if (words.length > 10 && !prompt.includes('::')) {
+      // This is a simple heuristic - ideally would be more sophisticated
+      const parts = prompt.split(/,\s*/);
+      if (parts.length > 2) {
+        optimized = parts.join(' :: ');
+      }
+    }
+
+    return optimized;
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 6: Quality Enhancement - Add examples, edge cases, validation
+  // ═══════════════════════════════════════════════════════════════════
+  const stage6_QualityEnhancement = (prompt, intent, gaps) => {
+    let enhanced = prompt;
+    const additions = [];
+
+    // Add examples if missing and complexity is not low
+    if (gaps.result.some(g => g.type === 'examples') && intent.complexity !== 'low') {
+      enhanced += `\n\nExample of Desired Output:
+[Provide a concrete example showing the format, style, and quality expected]`;
+      additions.push('example template');
+    }
+
+    // Add edge cases for complex tasks
+    if (intent.complexity === 'high' && !/(edge|exception|error|fallback)/i.test(prompt)) {
+      enhanced += `\n\nEdge Cases to Consider:
+- [Edge case 1]
+- [Edge case 2]
+- [How to handle unexpected inputs]`;
+      additions.push('edge cases');
+    }
+
+    // Add validation criteria
+    if (!/(success|criteria|validate|verify)/i.test(prompt)) {
+      enhanced += `\n\nSuccess Criteria:
+- [Criterion 1: Specific, measurable outcome]
+- [Criterion 2: Quality standard]
+- [Criterion 3: Completeness check]`;
+      additions.push('success criteria');
+    }
+
+    // Add specific metrics if missing
+    if (gaps.result.some(g => g.type === 'metrics')) {
+      enhanced += `\n\nMetrics:
+- [Specific number/percentage/quantity]
+- [Performance target]
+- [Quality threshold]`;
+      additions.push('metrics template');
+    }
+
+    return {
+      output: enhanced,
+      applied: additions.length > 0,
+      description: `Enhanced with: ${additions.join(', ') || 'quality checks passed'}`
+    };
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STAGE 7: Final Polish - Clarity, efficiency, completeness
+  // ═══════════════════════════════════════════════════════════════════
+  const stage7_FinalPolish = (prompt, originalPrompt) => {
+    let polished = prompt;
+    const improvements = [];
+
+    // Convert negative constraints to positive
+    const negativePatterns = [
+      { pattern: /don't be vague/gi, replacement: 'be specific with concrete examples and metrics', name: 'negative→positive' },
+      { pattern: /don't use/gi, replacement: 'instead use', name: 'negative→positive' },
+      { pattern: /avoid\s+(\w+)/gi, replacement: 'focus on $1 alternatives', name: 'negative→positive' },
+      { pattern: /never\s+(\w+)/gi, replacement: 'always $1', name: 'negative→positive' },
+      { pattern: /do not\s+(\w+)/gi, replacement: 'ensure you $1', name: 'negative→positive' }
+    ];
+
+    negativePatterns.forEach(({ pattern, replacement, name }) => {
+      if (pattern.test(polished)) {
+        polished = polished.replace(pattern, replacement);
+        if (!improvements.includes(name)) improvements.push(name);
+      }
     });
 
-    structured += `\nOriginal Intent: ${prompt}`;
+    // Remove redundant phrases
+    const redundancies = [
+      /\b(very very|really really|quite quite)\b/gi,
+      /\b(absolutely absolutely|totally totally)\b/gi
+    ];
 
-    return structured;
+    redundancies.forEach(pattern => {
+      if (pattern.test(polished)) {
+        polished = polished.replace(pattern, (match) => match.split(/\s+/)[0]);
+        if (!improvements.includes('redundancy removal')) improvements.push('redundancy removal');
+      }
+    });
+
+    // Ensure proper capitalization
+    if (polished && polished[0] !== polished[0].toUpperCase()) {
+      polished = polished[0].toUpperCase() + polished.slice(1);
+      improvements.push('capitalization');
+    }
+
+    // Add clarifying structure if it's too long and unstructured
+    const words = polished.split(/\s+/).length;
+    if (words > 100 && !polished.includes('\n\n')) {
+      // Already has sections from framework, this is good
+      improvements.push('structure maintained');
+    }
+
+    return {
+      output: polished,
+      applied: improvements.length > 0,
+      description: `Polished: ${improvements.join(', ') || 'already optimal'}`
+    };
   };
 
-  const applyToolTemplate = (prompt, tool) => {
-    if (!tool || !tool.template) return prompt;
+  // ═══════════════════════════════════════════════════════════════════
+  // VALIDATION: Does optimized prompt address original intent?
+  // ═══════════════════════════════════════════════════════════════════
+  const validateOptimization = (original, optimized, intent) => {
+    const checks = [];
 
-    return `${tool.template}\n\nTask: ${prompt}`;
-  };
+    // Check 1: Original intent preserved
+    const originalAction = intent.result.primaryAction;
+    if (optimized.toLowerCase().includes(originalAction) || optimized.toLowerCase().includes(original.toLowerCase().split(/\s+/).slice(0, 5).join(' '))) {
+      checks.push({ check: 'Intent preserved', passed: true });
+    } else {
+      checks.push({ check: 'Intent preserved', passed: false, issue: 'Original intent may be lost' });
+    }
 
-  const applyStructure = (prompt) => {
-    if (prompt.includes('\n')) return prompt;
+    // Check 2: Vague terms reduced
+    const vagueTerms = /(thing|stuff|somehow|maybe|perhaps|some|few|many)/gi;
+    const originalVague = (original.match(vagueTerms) || []).length;
+    const optimizedVague = (optimized.match(vagueTerms) || []).length;
+    checks.push({
+      check: 'Vagueness reduced',
+      passed: optimizedVague <= originalVague,
+      details: `${originalVague} → ${optimizedVague} vague terms`
+    });
 
-    const sentences = prompt.split(/[.!?]+/).filter(s => s.trim());
-    return sentences.map((s, i) => `${i + 1}. ${s.trim()}`).join('\n');
-  };
+    // Check 3: Output format specified
+    if (/(format|output|structure|deliver|provide.*as)/i.test(optimized)) {
+      checks.push({ check: 'Output format specified', passed: true });
+    } else {
+      checks.push({ check: 'Output format specified', passed: false, issue: 'Output format should be more explicit' });
+    }
 
-  const applyRolePrompting = (prompt, tool) => {
-    const role = tool.name.includes('Code') ? 'expert software engineer' :
-                 tool.name.includes('Research') ? 'research analyst' :
-                 tool.name.includes('creative') ? 'creative director' :
-                 'AI assistant';
+    // Check 4: Executability
+    const hasContext = /context|background|situation/i.test(optimized);
+    const hasAction = /(create|write|build|analyze|generate|design)/i.test(optimized);
+    const hasFormat = /(format|output|structure)/i.test(optimized);
+    checks.push({
+      check: 'Executable by someone else',
+      passed: hasContext && hasAction && hasFormat,
+      details: `Context: ${hasContext}, Action: ${hasAction}, Format: ${hasFormat}`
+    });
 
-    return `You are an ${role}.\n\n${prompt}`;
+    // Check 5: Length appropriate
+    const optimizedWords = optimized.split(/\s+/).length;
+    const originalWords = original.split(/\s+/).length;
+    const expansion = optimizedWords / originalWords;
+    checks.push({
+      check: 'Appropriate expansion',
+      passed: expansion >= 2 && expansion <= 20,
+      details: `${originalWords} → ${optimizedWords} words (${expansion.toFixed(1)}x)`
+    });
+
+    const allPassed = checks.every(c => c.passed);
+
+    return {
+      result: checks,
+      applied: true,
+      description: allPassed ? '✓ All validation checks passed' : `⚠ ${checks.filter(c => !c.passed).length} checks need attention`
+    };
   };
 
   // Copy to Clipboard
@@ -588,9 +1230,9 @@ const PromptOptimizer = () => {
             <div>
               <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
                 <Zap className="text-indigo-600" size={40} />
-                Prompt Optimizer
+                Prompt Optimizer Pro
               </h1>
-              <p className="text-gray-600 mt-2">Phase 1 + 2: Real-time Analysis & One-Click Optimization</p>
+              <p className="text-gray-600 mt-2">Master-Level 7-Stage Optimization Pipeline | Real-time Analysis | GitHub MCP Integration</p>
             </div>
             <div className="flex gap-3">
               <button
@@ -743,7 +1385,21 @@ const PromptOptimizer = () => {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Optimized Prompt</h2>
 
-              {optimizedPrompt ? (
+              {isOptimizing ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+                  <p className="text-gray-700 font-medium">Optimizing through 7 stages...</p>
+                  {optimizationStages.length > 0 && (
+                    <div className="mt-4 text-left space-y-2">
+                      {optimizationStages.map((stage, i) => (
+                        <div key={i} className="text-sm text-gray-600">
+                          ✓ Stage {i + 1}: {stage.name} - {stage.description}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : optimizedPrompt ? (
                 <div>
                   <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-4 max-h-64 overflow-y-auto">
                     <pre className="whitespace-pre-wrap text-sm text-gray-800">{optimizedPrompt}</pre>
@@ -766,6 +1422,33 @@ const PromptOptimizer = () => {
                     </button>
                   </div>
 
+                  {/* Optimization Stages */}
+                  {optimizationStages.length > 0 && (
+                    <div className="p-4 bg-purple-50 rounded-lg mb-4">
+                      <h3 className="font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                        <Zap size={18} />
+                        7-Stage Processing Pipeline
+                      </h3>
+                      <div className="space-y-2">
+                        {optimizationStages.map((stage, i) => (
+                          <details key={i} className="text-sm">
+                            <summary className="cursor-pointer font-medium text-purple-800 hover:text-purple-900">
+                              Stage {i + 1}: {stage.name} {stage.applied ? '✓' : '○'}
+                            </summary>
+                            <div className="mt-1 ml-4 text-purple-700">
+                              {stage.description}
+                              {stage.result && typeof stage.result === 'object' && (
+                                <div className="mt-1 text-xs bg-purple-100 p-2 rounded">
+                                  {JSON.stringify(stage.result, null, 2).slice(0, 200)}...
+                                </div>
+                              )}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Techniques Applied */}
                   <div className="p-4 bg-indigo-50 rounded-lg">
                     <h3 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
@@ -785,6 +1468,7 @@ const PromptOptimizer = () => {
                 <div className="text-center py-12 text-gray-500">
                   <TrendingUp size={48} className="mx-auto mb-4 text-gray-400" />
                   <p>Click "Optimize Prompt" to see results</p>
+                  <p className="text-sm mt-2">7-stage master-level optimization</p>
                 </div>
               )}
             </div>
