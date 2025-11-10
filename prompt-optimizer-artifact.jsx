@@ -407,61 +407,87 @@ const PromptOptimizer = () => {
   // MASTER-LEVEL OPTIMIZATION ENGINE - 7 Stage Processing Pipeline
   // ═══════════════════════════════════════════════════════════════════
 
-  const optimizePrompt = async () => {
-    if (!inputPrompt || !knowledgeBase) return;
+  const optimizePrompt = () => {
+    if (!inputPrompt || !knowledgeBase) {
+      console.log('Missing input or knowledge base');
+      return;
+    }
 
+    console.log('Starting optimization...');
     setIsOptimizing(true);
     const stages = [];
     const techniques = [];
     const tool = knowledgeBase.tools[selectedTool];
     const framework = knowledgeBase.frameworks[selectedFramework];
 
-    try {
-      // STAGE 1: Intent Analysis
-      const stage1 = await stage1_IntentAnalysis(inputPrompt, tool);
-      stages.push({ name: 'Intent Analysis', ...stage1 });
+    // Use setTimeout to allow UI to update
+    setTimeout(() => {
+      try {
+        console.log('Stage 1: Intent Analysis');
+        // STAGE 1: Intent Analysis
+        const stage1 = stage1_IntentAnalysis(inputPrompt, tool);
+        stages.push({ name: 'Intent Analysis', ...stage1 });
+        console.log('Stage 1 complete:', stage1);
 
-      // STAGE 2: Gap Detection
-      const stage2 = stage2_GapDetection(inputPrompt, stage1, tool, framework);
-      stages.push({ name: 'Gap Detection', ...stage2 });
+        console.log('Stage 2: Gap Detection');
+        // STAGE 2: Gap Detection
+        const stage2 = stage2_GapDetection(inputPrompt, stage1, tool, framework);
+        stages.push({ name: 'Gap Detection', ...stage2 });
+        console.log('Stage 2 complete:', stage2);
 
-      // STAGE 3: Context Injection
-      const stage3 = stage3_ContextInjection(inputPrompt, stage1, stage2);
-      stages.push({ name: 'Context Injection', ...stage3 });
-      if (stage3.applied) techniques.push('context_injection');
+        console.log('Stage 3: Context Injection');
+        // STAGE 3: Context Injection
+        const stage3 = stage3_ContextInjection(inputPrompt, stage1, stage2);
+        stages.push({ name: 'Context Injection', ...stage3 });
+        if (stage3.applied) techniques.push('context_injection');
+        console.log('Stage 3 complete:', stage3);
 
-      // STAGE 4: Framework Application
-      const stage4 = stage4_FrameworkApplication(stage3.output, framework, stage1, tool);
-      stages.push({ name: 'Framework Application', ...stage4 });
-      if (stage4.applied) techniques.push('framework_structure');
+        console.log('Stage 4: Framework Application');
+        // STAGE 4: Framework Application
+        const stage4 = stage4_FrameworkApplication(stage3.output, framework, stage1, tool);
+        stages.push({ name: 'Framework Application', ...stage4 });
+        if (stage4.applied) techniques.push('framework_structure');
+        console.log('Stage 4 complete:', stage4);
 
-      // STAGE 5: Tool Optimization
-      const stage5 = stage5_ToolOptimization(stage4.output, tool, stage1);
-      stages.push({ name: 'Tool Optimization', ...stage5 });
-      if (stage5.applied) techniques.push('tool_specific');
+        console.log('Stage 5: Tool Optimization');
+        // STAGE 5: Tool Optimization
+        const stage5 = stage5_ToolOptimization(stage4.output, tool, stage1);
+        stages.push({ name: 'Tool Optimization', ...stage5 });
+        if (stage5.applied) techniques.push('tool_specific');
+        console.log('Stage 5 complete:', stage5);
 
-      // STAGE 6: Quality Enhancement
-      const stage6 = stage6_QualityEnhancement(stage5.output, stage1, stage2);
-      stages.push({ name: 'Quality Enhancement', ...stage6 });
-      if (stage6.applied) techniques.push('quality_enhancement');
+        console.log('Stage 6: Quality Enhancement');
+        // STAGE 6: Quality Enhancement
+        const stage6 = stage6_QualityEnhancement(stage5.output, stage1, stage2);
+        stages.push({ name: 'Quality Enhancement', ...stage6 });
+        if (stage6.applied) techniques.push('quality_enhancement');
+        console.log('Stage 6 complete:', stage6);
 
-      // STAGE 7: Final Polish
-      const stage7 = stage7_FinalPolish(stage6.output, inputPrompt);
-      stages.push({ name: 'Final Polish', ...stage7 });
-      if (stage7.applied) techniques.push('final_polish');
+        console.log('Stage 7: Final Polish');
+        // STAGE 7: Final Polish
+        const stage7 = stage7_FinalPolish(stage6.output, inputPrompt);
+        stages.push({ name: 'Final Polish', ...stage7 });
+        if (stage7.applied) techniques.push('final_polish');
+        console.log('Stage 7 complete:', stage7);
 
-      // Validation
-      const validation = validateOptimization(inputPrompt, stage7.output, stage1);
-      stages.push({ name: 'Validation', ...validation });
+        console.log('Validation');
+        // Validation
+        const validation = validateOptimization(inputPrompt, stage7.output, stage1);
+        stages.push({ name: 'Validation', ...validation });
+        console.log('Validation complete:', validation);
 
-      setOptimizationStages(stages);
-      setOptimizedPrompt(stage7.output);
-      setAppliedTechniques(techniques);
-    } catch (error) {
-      console.error('Optimization error:', error);
-    } finally {
-      setIsOptimizing(false);
-    }
+        console.log('Setting results...');
+        setOptimizationStages(stages);
+        setOptimizedPrompt(stage7.output);
+        setAppliedTechniques(techniques);
+        console.log('Optimization complete!');
+      } catch (error) {
+        console.error('Optimization error:', error);
+        alert('Error during optimization: ' + error.message);
+      } finally {
+        setIsOptimizing(false);
+      }
+    }, 100);
   };
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1321,12 +1347,15 @@ ${prompt.includes('step') ? 'Follow the steps above systematically.' : 'Approach
 
               <button
                 onClick={optimizePrompt}
-                disabled={!inputPrompt}
+                disabled={!inputPrompt || !knowledgeBase || isOptimizing}
                 className="w-full mt-4 px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
               >
                 <Zap size={24} />
-                Optimize Prompt
+                {isOptimizing ? 'Optimizing...' : 'Optimize Prompt'}
               </button>
+              {!knowledgeBase && (
+                <p className="text-xs text-red-600 mt-2">⚠️ Loading knowledge base...</p>
+              )}
             </div>
           </div>
 
