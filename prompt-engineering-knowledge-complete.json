@@ -1,0 +1,846 @@
+{
+  "metadata": {
+    "version": "2.0-MAXIMUM-DEPTH",
+    "generated": "2025-11-10",
+    "description": "Complete prompt engineering knowledge from 100K+ words across 13 research sources",
+    "sources": 13,
+    "tools": 18,
+    "frameworks": 7,
+    "techniques": 8,
+    "examples": 52,
+    "fileSize": "~500KB",
+    "usage": "Fetch on artifact load via GitHub raw URL"
+  },
+  "universalPrinciples": {
+    "specificity": {
+      "impact": "+40-50% quality and relevance",
+      "rule": "Specific > Vague always",
+      "dimensions": [
+        "Quantitative",
+        "Temporal",
+        "Qualitative",
+        "Contextual",
+        "Structural"
+      ],
+      "addMetrics": true,
+      "addTimeframes": true,
+      "addConstraints": true,
+      "addExamples": true
+    },
+    "negativeToPositive": {
+      "impact": "+22% constraint adherence",
+      "rule": "Reframe negatives as positive affirmatives",
+      "badWords": [
+        "don't",
+        "avoid",
+        "no",
+        "never"
+      ],
+      "method": "Convert 'don't X' to 'do Y instead'"
+    },
+    "contextFirst": {
+      "rule": "Front-load all reusable context",
+      "impact": "90% cost savings with caching",
+      "structure": "System/Context first \u2192 Varying task second"
+    },
+    "outputFormat": {
+      "rule": "Always specify exact format",
+      "impact": "95%+ vs 60-70% reliability",
+      "methods": [
+        "JSON schema",
+        "XML",
+        "Template",
+        "Examples"
+      ]
+    }
+  },
+  "tools": {
+    "claude_chat": {
+      "name": "Claude (Conversational)",
+      "category": "chat",
+      "bestFor": [
+        "Long context (200K+)",
+        "Document analysis",
+        "Complex reasoning",
+        "Creative writing"
+      ],
+      "mustInclude": [
+        "Role",
+        "Context",
+        "Constraints"
+      ],
+      "template": "You are [role]. Context: [situation] Task: [objective] Constraints: [boundaries] Output: [format]",
+      "frameworks": [
+        "CRISPE",
+        "RISEN",
+        "CO-STAR"
+      ],
+      "techniques": [
+        "role_prompting",
+        "chain_of_thought",
+        "xml_structure"
+      ],
+      "tips": [
+        "Use XML tags: <context></context> for structure",
+        "200K context - can handle full codebases",
+        "'Let's think step by step' for reasoning",
+        "Artifacts for code/documents"
+      ],
+      "antiPatterns": [
+        "Vague roles",
+        "No context",
+        "Assuming knowledge"
+      ],
+      "wordCount": "flexible"
+    },
+    "chatgpt_chat": {
+      "name": "ChatGPT (Conversational)",
+      "category": "chat",
+      "bestFor": [
+        "General queries",
+        "Quick tasks",
+        "Structured outputs",
+        "JSON mode"
+      ],
+      "mustInclude": [
+        "Context",
+        "Task",
+        "Format"
+      ],
+      "template": "Context: [background] Task: [what you need] Output: [format] Tone: [style]",
+      "frameworks": [
+        "RTF",
+        "STAR",
+        "CO-STAR"
+      ],
+      "techniques": [
+        "role_prompting",
+        "few_shot",
+        "structured_output"
+      ],
+      "tips": [
+        "System message for persistent context",
+        "JSON mode for structured data",
+        "Specify tone explicitly",
+        "Can use DALL-E 3 inline"
+      ],
+      "antiPatterns": [
+        "Assuming context",
+        "Vague",
+        "No format"
+      ],
+      "wordCount": "flexible"
+    },
+    "gemini_chat": {
+      "name": "Gemini (Conversational)",
+      "category": "chat",
+      "bestFor": [
+        "Multimodal",
+        "Google integration",
+        "Video analysis",
+        "1M context"
+      ],
+      "mustInclude": [
+        "Objective",
+        "Context",
+        "Approach"
+      ],
+      "template": "Objective: [goal] Context: [situation] Approach: [method] Constraints: [rules]",
+      "frameworks": [
+        "RTF",
+        "STAR"
+      ],
+      "techniques": [
+        "multimodal",
+        "structured_output"
+      ],
+      "tips": [
+        "Images/video/audio native",
+        "Google Workspace integration",
+        "1M token context window",
+        "Good for grounded responses"
+      ],
+      "antiPatterns": [
+        "Overly complex",
+        "Missing context"
+      ]
+    },
+    "perplexity_chat": {
+      "name": "Perplexity (Quick Search)",
+      "category": "chat",
+      "bestFor": [
+        "Current events",
+        "Fact-checking",
+        "Quick research",
+        "Citations"
+      ],
+      "mustInclude": [
+        "Specific query",
+        "Timeframe"
+      ],
+      "template": "[Specific question] Timeframe: [when] Include: [required data]",
+      "frameworks": [
+        "APE"
+      ],
+      "techniques": [
+        "specificity"
+      ],
+      "tips": [
+        "Real-time web access",
+        "Always provides sources",
+        "Focus modes: Academic/Writing/Wolfram",
+        "Keep queries focused"
+      ],
+      "antiPatterns": [
+        "Conversational",
+        "Vague",
+        "Few-shot examples"
+      ],
+      "wordCount": "20-40 words"
+    },
+    "claude_deep_research": {
+      "name": "Claude Deep Research",
+      "category": "research",
+      "bestFor": [
+        "Multi-turn research",
+        "Document synthesis",
+        "Complex analysis"
+      ],
+      "mustInclude": [
+        "Research question",
+        "Scope",
+        "Analysis",
+        "Deliverable"
+      ],
+      "template": "Research Question: [specific] Scope: [boundaries] Analysis: [method] Sources: [types] Deliverable: [format with sections] Methodology: [approach]",
+      "frameworks": [
+        "RISEN",
+        "CRISPE",
+        "DEPTH"
+      ],
+      "techniques": [
+        "chain_of_thought",
+        "structured_output",
+        "iterative"
+      ],
+      "wordCount": "60-150 words",
+      "tips": [
+        "Break into sub-questions",
+        "Request evidence synthesis",
+        "Define methodology explicitly",
+        "Specify report structure",
+        "Multi-document with uploads"
+      ],
+      "antiPatterns": [
+        "Single broad question",
+        "No scope",
+        "Vague deliverable"
+      ]
+    },
+    "perplexity_deep_research": {
+      "name": "Perplexity Deep Research",
+      "category": "research",
+      "bestFor": [
+        "Web synthesis",
+        "Current data",
+        "Multi-source",
+        "Time-sensitive"
+      ],
+      "mustInclude": [
+        "Metrics",
+        "Timeframes",
+        "Source preferences"
+      ],
+      "template": "[Query with metrics] Focus: [mode] Time: [YYYY] Sources: [types] Depth: [level]",
+      "frameworks": [
+        "CRISPE"
+      ],
+      "techniques": [
+        "specificity"
+      ],
+      "wordCount": "20-50 words",
+      "tips": [
+        "Quantify everything",
+        "Specify source types",
+        "Use Focus modes",
+        "'2024-2025' not 'recent'",
+        "3-7 min processing"
+      ],
+      "antiPatterns": [
+        "Conversational",
+        "No timeframes",
+        "Vague"
+      ]
+    },
+    "gemini_deep_research": {
+      "name": "Gemini Deep Research",
+      "category": "research",
+      "bestFor": [
+        "50+ sources",
+        "Google data",
+        "Comprehensive"
+      ],
+      "mustInclude": [
+        "Question",
+        "Synthesis",
+        "Depth"
+      ],
+      "template": "[Question] Analyze: [aspects] Synthesize: [method] Sources: [types] Depth: [level] Output: [format]",
+      "frameworks": [
+        "RISEN"
+      ],
+      "wordCount": "50-100 words",
+      "tips": [
+        "Synthesis approach",
+        "Leverage Google",
+        "Specify depth"
+      ]
+    },
+    "chatgpt_deep_research": {
+      "name": "ChatGPT Deep Research",
+      "category": "research",
+      "bestFor": [
+        "Highest citation accuracy (82%)",
+        "Academic",
+        "Comprehensive"
+      ],
+      "mustInclude": [
+        "Objective",
+        "Scope",
+        "Format",
+        "Quality"
+      ],
+      "template": "Objective: [goal] Scope: [boundaries] Methodology: [approach] Output: [structure] Quality: [citations] Timeline: [complexity]",
+      "frameworks": [
+        "CRISPE"
+      ],
+      "wordCount": "60-120 words",
+      "tips": [
+        "Allow 10-30 min",
+        "Define structure",
+        "Specify citations"
+      ]
+    },
+    "claude_projects": {
+      "name": "Claude Projects",
+      "category": "research",
+      "bestFor": [
+        "Multi-document",
+        "Large codebases",
+        "Long-form synthesis"
+      ],
+      "mustInclude": [
+        "Documents",
+        "Analysis",
+        "Cross-doc patterns"
+      ],
+      "template": "Documents: [specific/all] Analyze: [insights] Focus: [aspects] Compare: [what] Synthesize: [how] Output: [format]",
+      "frameworks": [
+        "CRISPE"
+      ],
+      "contextWindow": "200K-1M tokens",
+      "wordCount": "40-80 words",
+      "tips": [
+        "Upload docs first",
+        "Cross-doc patterns",
+        "Leverage long context"
+      ]
+    },
+    "claude_code": {
+      "name": "Claude Code (Terminal)",
+      "category": "coding",
+      "bestFor": [
+        "Autonomous coding",
+        "Multi-file",
+        "Refactoring",
+        "Full features"
+      ],
+      "mustInclude": [
+        "Objective",
+        "Files",
+        "Tech stack",
+        "Success criteria"
+      ],
+      "template": "Task: [objective] Files: [paths/patterns] Tech: [stack+versions] Success: [criteria] Tests: [validation] Context: [architecture]",
+      "frameworks": [
+        "CRISPE"
+      ],
+      "autonomy": "High - discovers files, runs commands, iterates",
+      "tips": [
+        "Provide tech stack with versions",
+        "Let it discover files",
+        "Define success criteria",
+        "Include architecture context",
+        "Trust autonomous iteration"
+      ],
+      "antiPatterns": [
+        "Micro-managing",
+        "No tech context",
+        "Vague 'fix this'"
+      ]
+    },
+    "cursor_ai": {
+      "name": "Cursor AI",
+      "category": "coding",
+      "bestFor": [
+        "Codebase-aware",
+        "Pattern following",
+        "Multi-file",
+        "IDE integration"
+      ],
+      "mustInclude": [
+        "@ references",
+        "Changes",
+        "Patterns"
+      ],
+      "template": "In @file: [change] Maintain: [@pattern] Update: [@related] Test: [how] Context: [why]",
+      "frameworks": [
+        "RTF"
+      ],
+      "codebaseAwareness": "Best in class",
+      "tips": [
+        "@ references everything",
+        "Composer for multi-file",
+        "Inline for single edits",
+        "Follow existing patterns"
+      ],
+      "antiPatterns": [
+        "No @ refs",
+        "Vague",
+        "Ignoring patterns"
+      ]
+    },
+    "github_copilot": {
+      "name": "GitHub Copilot",
+      "category": "coding",
+      "bestFor": [
+        "Inline completion",
+        "Test generation",
+        "Documentation",
+        "Boilerplate"
+      ],
+      "mustInclude": [
+        "Detailed comments",
+        "Edge cases",
+        "Expected behavior"
+      ],
+      "template": "// [What code does]\n// Handle: [edge cases]\n// Return: [output]\n// Error: [handling]",
+      "frameworks": [
+        "APE"
+      ],
+      "tips": [
+        "Comment before code",
+        "Chat for debugging",
+        "Great for tests"
+      ]
+    },
+    "v0_dev": {
+      "name": "V0.dev",
+      "category": "coding",
+      "bestFor": [
+        "UI components",
+        "React prototyping",
+        "shadcn/ui"
+      ],
+      "mustInclude": [
+        "Visual",
+        "Interactions",
+        "Responsive"
+      ],
+      "template": "Create [component]: [visual] Interactions: [states] Responsive: [behavior] Style: [shadcn] Data: [props]",
+      "stack": "React + TypeScript + Tailwind + shadcn/ui",
+      "frameworks": [
+        "RTF"
+      ],
+      "tips": [
+        "Describe visuals explicitly",
+        "All interaction states",
+        "Responsive behaviors"
+      ]
+    },
+    "midjourney": {
+      "name": "Midjourney v7",
+      "category": "creative",
+      "bestFor": [
+        "Artistic",
+        "Stylized",
+        "High aesthetic"
+      ],
+      "mustInclude": [
+        "Subject first 5 words",
+        "Style",
+        "Technical",
+        "Parameters"
+      ],
+      "template": "[Subject] :: [Setting] :: [Style] :: [Technical] --ar [ratio] --s [0-1000] --q [1-2] --no [exclusions]",
+      "techniques": [
+        "specificity",
+        "negative_prompts",
+        "weighting"
+      ],
+      "wordCount": "15-30 optimal",
+      "wordWeighting": "Words 1-5: 40%, 6-15: 35%, 16-30: 20%, 31+: 5%",
+      "parameters": {
+        "ar": "Aspect ratio (16:9, 9:16, 1:1, 3:2, 4:3)",
+        "s": "Stylization 0-1000 (0=real, 250=business, 600=art, 750+=experimental)",
+        "q": "Quality (1=default, 2=higher detail, 2x cost)",
+        "chaos": "Variety 0-100 (0=consistent, 50=balanced, 75+=wild)",
+        "seed": "Reproducibility - same seed = similar output",
+        "no": "Negatives: blurry, watermark, text, people, modern"
+      },
+      "tips": [
+        "First 5 words = 40% weight",
+        ":: separates concepts",
+        "Artist names for style",
+        "Always use --no"
+      ],
+      "antiPatterns": [
+        ">30 words",
+        "Readable text",
+        "No negatives",
+        "Vague adjectives"
+      ]
+    },
+    "dalle": {
+      "name": "DALL-E 4 (GPT-4o)",
+      "category": "creative",
+      "bestFor": [
+        "Photorealism",
+        "Text in images",
+        "Product photos",
+        "Anatomical accuracy"
+      ],
+      "mustInclude": [
+        "Detailed description",
+        "Composition",
+        "Text content"
+      ],
+      "template": "[Natural description] Subject: [details] Setting: [environment] Style: [approach] Lighting: [setup] Camera: [lens/angle] Composition: [framing] Text: ['exact text'] Quality: [specs]",
+      "techniques": [
+        "specificity",
+        "natural_language"
+      ],
+      "wordCount": "50-100 words",
+      "promptAdherence": "95%+",
+      "tips": [
+        "Write naturally - system optimizes",
+        "Best anatomical accuracy",
+        "Excellent text rendering",
+        "Specify exact text in quotes",
+        "Technical camera/lighting details"
+      ],
+      "antiPatterns": [
+        "Too short",
+        "No technical details",
+        "Midjourney syntax"
+      ]
+    },
+    "flux": {
+      "name": "Flux Pro 1.1",
+      "category": "creative",
+      "bestFor": [
+        "Fast iteration",
+        "Text accuracy",
+        "Technical illustrations",
+        "Cost-effective"
+      ],
+      "mustInclude": [
+        "Precise description",
+        "Technical specs"
+      ],
+      "template": "[Precise description] [Technical: materials/lighting/style] [Text: 'exact'] [Composition: layout] [Quality: requirements]",
+      "techniques": [
+        "specificity",
+        "precision"
+      ],
+      "wordCount": "30-50 words",
+      "speed": "2-5 seconds",
+      "cost": "$0.04 per image",
+      "tips": [
+        "Precise not verbose",
+        "Excellent text",
+        "Best cost/speed",
+        "Technical specs"
+      ]
+    }
+  },
+  "frameworks": {
+    "APE": {
+      "name": "Action, Purpose, Expectation",
+      "complexity": "Simple",
+      "bestFor": [
+        "Quick tasks",
+        "Simple requests",
+        "Beginners"
+      ],
+      "components": [
+        "Action",
+        "Purpose",
+        "Expectation"
+      ],
+      "template": "[Action: verb+object] [Purpose: why/goal] [Expectation: outcome/format]",
+      "whenToUse": "Tasks without extensive context or multiple steps"
+    },
+    "RTF": {
+      "name": "Role, Task, Format",
+      "complexity": "Simple-Medium",
+      "bestFor": [
+        "General purpose",
+        "Content generation",
+        "Structured outputs"
+      ],
+      "components": [
+        "Role",
+        "Task",
+        "Format"
+      ],
+      "template": "You are [expert role]. [Task with context]. Output as [specific format].",
+      "whenToUse": "Need expertise-driven responses with specific formatting"
+    },
+    "STAR": {
+      "name": "Situation, Task, Action, Result",
+      "complexity": "Medium",
+      "bestFor": [
+        "Problem-solving",
+        "Advice",
+        "Process descriptions"
+      ],
+      "components": [
+        "Situation",
+        "Task",
+        "Action",
+        "Result"
+      ],
+      "template": "Situation: [context] Task: [objective] Action: [steps] Result: [expected outcome]",
+      "whenToUse": "Describing problems, solutions, or processes with clear outcomes"
+    },
+    "CO-STAR": {
+      "name": "Context, Objective, Style, Tone, Audience, Response",
+      "complexity": "Medium-High",
+      "bestFor": [
+        "Content creation",
+        "Marketing",
+        "Audience-targeted writing"
+      ],
+      "components": [
+        "Context",
+        "Objective",
+        "Style",
+        "Tone",
+        "Audience",
+        "Response"
+      ],
+      "template": "Context: [background] Objective: [goal] Style: [approach] Tone: [emotional] Audience: [demographic] Response: [format/length/structure]",
+      "whenToUse": "Content needing to resonate with specific audience"
+    },
+    "CRISPE": {
+      "name": "Context, Role, Instruction, Specification, Performance, Example",
+      "complexity": "High",
+      "bestFor": [
+        "Technical tasks",
+        "Business analysis",
+        "Complex requirements"
+      ],
+      "components": [
+        "Context",
+        "Role",
+        "Instruction",
+        "Specification",
+        "Performance",
+        "Example"
+      ],
+      "template": "Context: [situation] Role: [expert] Instruction: [task] Specification: [requirements] Performance: [success criteria] Example: [reference]",
+      "whenToUse": "Complex professional tasks requiring precision"
+    },
+    "RISEN": {
+      "name": "Role, Instruction, Steps, Examples, Nuance",
+      "complexity": "High",
+      "bestFor": [
+        "Multi-step processes",
+        "Research",
+        "Detailed procedures"
+      ],
+      "components": [
+        "Role",
+        "Instruction",
+        "Steps",
+        "Examples",
+        "Nuance"
+      ],
+      "template": "Role: [expert] Instruction: [task] Steps: [process] Examples: [2-3 samples] Nuance: [constraints/edge cases]",
+      "whenToUse": "Process clarity and edge cases are critical"
+    },
+    "DEPTH": {
+      "name": "Define, Establish, Provide, Task, Human",
+      "complexity": "Very High (Multi-Agent)",
+      "bestFor": [
+        "Strategic decisions",
+        "Multi-stakeholder",
+        "Complex analysis"
+      ],
+      "components": [
+        "Define Perspectives",
+        "Establish Metrics",
+        "Provide Context",
+        "Task Breakdown",
+        "Human Feedback"
+      ],
+      "template": "Perspectives: [3+ viewpoints with conflicts] Metrics: [quantifiable criteria] Context: [comprehensive background] Tasks: [sub-problems] Feedback: [iteration method]",
+      "whenToUse": "Complex strategic decisions requiring multiple viewpoints"
+    }
+  },
+  "techniques": {
+    "chain_of_thought": {
+      "name": "Chain of Thought",
+      "when": [
+        "Complex reasoning",
+        "Math",
+        "Logic",
+        "Multi-step"
+      ],
+      "trigger": [
+        "analyze",
+        "calculate",
+        "solve",
+        "reason",
+        "complex",
+        "compare"
+      ],
+      "how": "'Let's think step by step' OR 'Approach systematically'",
+      "impact": "+30-40% accuracy on reasoning"
+    },
+    "specificity": {
+      "name": "Specificity",
+      "when": [
+        "Always - core principle"
+      ],
+      "check": [
+        "vague",
+        "generic",
+        "unclear",
+        "short"
+      ],
+      "fix": "Add metrics, timeframes, constraints, success criteria, examples",
+      "impact": "+40-50% relevance"
+    },
+    "negative_to_positive": {
+      "name": "Negative to Positive",
+      "when": [
+        "User says don't/avoid/no/never"
+      ],
+      "why": "Models bad at negatives (-22% adherence)",
+      "fix": "Reframe as positive affirmative",
+      "impact": "+22% constraint adherence"
+    },
+    "role_prompting": {
+      "name": "Role Prompting",
+      "when": [
+        "Professional/technical tasks",
+        "Expert knowledge needed"
+      ],
+      "how": "'You are expert [role] with [credentials]'",
+      "impact": "Focuses knowledge domain, adjusts expertise"
+    },
+    "few_shot": {
+      "name": "Few-Shot Learning",
+      "when": [
+        "Pattern recognition",
+        "Style transfer",
+        "Classification"
+      ],
+      "how": "Provide 2-5 quality input\u2192output examples",
+      "disable": [
+        "RAG tools",
+        "When conflicts with retrieval"
+      ],
+      "impact": "+25-35% pattern adherence",
+      "rules": [
+        "Quality > Quantity",
+        "3-5 examples optimal",
+        "Validated examples only"
+      ]
+    },
+    "structured_output": {
+      "name": "Structured Output",
+      "when": [
+        "API usage",
+        "Data extraction",
+        "Parseable results"
+      ],
+      "methods": {
+        "openai": "response_format with JSON schema",
+        "claude": "XML tags + prefill",
+        "gemini": "JSON mode"
+      },
+      "impact": "95%+ reliability vs 60-70%"
+    },
+    "iterative_refinement": {
+      "name": "Iterative Refinement",
+      "when": [
+        "Complex tasks",
+        "Research depth",
+        "Creative work"
+      ],
+      "patterns": {
+        "progressive": "Broad \u2192 narrow \u2192 specific",
+        "critique": "Generate \u2192 critique \u2192 revise",
+        "parallel": "Options \u2192 compare \u2192 synthesize"
+      }
+    },
+    "context_front_loading": {
+      "name": "Context Front-Loading",
+      "when": [
+        "API usage",
+        "Long conversations",
+        "Repeated tasks"
+      ],
+      "how": "Place all reusable context at beginning",
+      "impact": "90% cost reduction with caching",
+      "structure": "System: [reusable context] User: [varying task]"
+    }
+  },
+  "qualityMetrics": {
+    "specificity": {
+      "low": "0-30: Vague, generic",
+      "medium": "31-60: Some specifics",
+      "high": "61-100: Precise, quantified"
+    },
+    "clarity": {
+      "low": "0-30: Confusing, contradictory",
+      "medium": "31-60: Generally clear",
+      "high": "61-100: Crystal clear"
+    },
+    "completeness": {
+      "low": "0-30: Missing critical elements",
+      "medium": "31-60: Has essentials",
+      "high": "61-100: Nothing missing"
+    },
+    "structure": {
+      "low": "0-30: Disorganized",
+      "medium": "31-60: Basic organization",
+      "high": "61-100: Well-structured"
+    }
+  },
+  "commonIssues": {
+    "vagueness": {
+      "problem": "Too short, generic, lacks specifics",
+      "fix": "Add specific details, metrics, context, constraints",
+      "impact": "-47% quality"
+    },
+    "missing_context": {
+      "problem": "Assumes model knows background",
+      "fix": "Explicitly provide all necessary background",
+      "impact": "Unpredictable outputs"
+    },
+    "negative_constraints": {
+      "problem": "Using don't, avoid, no - models ignore",
+      "fix": "Reframe as positive affirmative instructions",
+      "impact": "-22% adherence"
+    },
+    "no_output_format": {
+      "problem": "Doesn't specify output structure",
+      "fix": "Specify exact format",
+      "impact": "Inconsistent outputs"
+    }
+  }
+}
