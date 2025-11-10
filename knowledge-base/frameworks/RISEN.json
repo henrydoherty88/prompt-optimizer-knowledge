@@ -1,0 +1,18 @@
+{
+  "name": "Role, Instruction, Steps, Examples, Nuance",
+  "complexity": "High",
+  "bestFor": [
+    "Multi-step processes",
+    "Research",
+    "Detailed procedures"
+  ],
+  "components": [
+    "Role",
+    "Instruction",
+    "Steps",
+    "Examples",
+    "Nuance"
+  ],
+  "template": "Role: [expert] Instruction: [task] Steps: [process] Examples: [2-3 samples] Nuance: [constraints/edge cases]",
+  "whenToUse": "Process clarity and edge cases are critical"
+}

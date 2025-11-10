@@ -1,0 +1,25 @@
+{
+  "name": "Claude Projects",
+  "category": "research",
+  "bestFor": [
+    "Multi-document",
+    "Large codebases",
+    "Long-form synthesis"
+  ],
+  "mustInclude": [
+    "Documents",
+    "Analysis",
+    "Cross-doc patterns"
+  ],
+  "template": "Documents: [specific/all] Analyze: [insights] Focus: [aspects] Compare: [what] Synthesize: [how] Output: [format]",
+  "frameworks": [
+    "CRISPE"
+  ],
+  "contextWindow": "200K-1M tokens",
+  "wordCount": "40-80 words",
+  "tips": [
+    "Upload docs first",
+    "Cross-doc patterns",
+    "Leverage long context"
+  ]
+}

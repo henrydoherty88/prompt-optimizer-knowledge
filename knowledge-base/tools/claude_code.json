@@ -1,0 +1,33 @@
+{
+  "name": "Claude Code (Terminal)",
+  "category": "coding",
+  "bestFor": [
+    "Autonomous coding",
+    "Multi-file",
+    "Refactoring",
+    "Full features"
+  ],
+  "mustInclude": [
+    "Objective",
+    "Files",
+    "Tech stack",
+    "Success criteria"
+  ],
+  "template": "Task: [objective] Files: [paths/patterns] Tech: [stack+versions] Success: [criteria] Tests: [validation] Context: [architecture]",
+  "frameworks": [
+    "CRISPE"
+  ],
+  "autonomy": "High - discovers files, runs commands, iterates",
+  "tips": [
+    "Provide tech stack with versions",
+    "Let it discover files",
+    "Define success criteria",
+    "Include architecture context",
+    "Trust autonomous iteration"
+  ],
+  "antiPatterns": [
+    "Micro-managing",
+    "No tech context",
+    "Vague 'fix this'"
+  ]
+}

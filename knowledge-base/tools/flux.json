@@ -1,0 +1,28 @@
+{
+  "name": "Flux Pro 1.1",
+  "category": "creative",
+  "bestFor": [
+    "Fast iteration",
+    "Text accuracy",
+    "Technical illustrations",
+    "Cost-effective"
+  ],
+  "mustInclude": [
+    "Precise description",
+    "Technical specs"
+  ],
+  "template": "[Precise description] [Technical: materials/lighting/style] [Text: 'exact'] [Composition: layout] [Quality: requirements]",
+  "techniques": [
+    "specificity",
+    "precision"
+  ],
+  "wordCount": "30-50 words",
+  "speed": "2-5 seconds",
+  "cost": "$0.04 per image",
+  "tips": [
+    "Precise not verbose",
+    "Excellent text",
+    "Best cost/speed",
+    "Technical specs"
+  ]
+}

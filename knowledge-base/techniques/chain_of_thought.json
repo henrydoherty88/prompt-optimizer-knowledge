@@ -1,0 +1,19 @@
+{
+  "name": "Chain of Thought",
+  "when": [
+    "Complex reasoning",
+    "Math",
+    "Logic",
+    "Multi-step"
+  ],
+  "trigger": [
+    "analyze",
+    "calculate",
+    "solve",
+    "reason",
+    "complex",
+    "compare"
+  ],
+  "how": "'Let's think step by step' OR 'Approach systematically'",
+  "impact": "+30-40% accuracy on reasoning"
+}

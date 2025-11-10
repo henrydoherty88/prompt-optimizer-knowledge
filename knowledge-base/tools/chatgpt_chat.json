@@ -1,0 +1,38 @@
+{
+  "name": "ChatGPT (Conversational)",
+  "category": "chat",
+  "bestFor": [
+    "General queries",
+    "Quick tasks",
+    "Structured outputs",
+    "JSON mode"
+  ],
+  "mustInclude": [
+    "Context",
+    "Task",
+    "Format"
+  ],
+  "template": "Context: [background] Task: [what you need] Output: [format] Tone: [style]",
+  "frameworks": [
+    "RTF",
+    "STAR",
+    "CO-STAR"
+  ],
+  "techniques": [
+    "role_prompting",
+    "few_shot",
+    "structured_output"
+  ],
+  "tips": [
+    "System message for persistent context",
+    "JSON mode for structured data",
+    "Specify tone explicitly",
+    "Can use DALL-E 3 inline"
+  ],
+  "antiPatterns": [
+    "Assuming context",
+    "Vague",
+    "No format"
+  ],
+  "wordCount": "flexible"
+}

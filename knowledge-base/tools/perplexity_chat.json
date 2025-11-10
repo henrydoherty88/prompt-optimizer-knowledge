@@ -1,0 +1,33 @@
+{
+  "name": "Perplexity (Quick Search)",
+  "category": "chat",
+  "bestFor": [
+    "Current events",
+    "Fact-checking",
+    "Quick research",
+    "Citations"
+  ],
+  "mustInclude": [
+    "Specific query",
+    "Timeframe"
+  ],
+  "template": "[Specific question] Timeframe: [when] Include: [required data]",
+  "frameworks": [
+    "APE"
+  ],
+  "techniques": [
+    "specificity"
+  ],
+  "tips": [
+    "Real-time web access",
+    "Always provides sources",
+    "Focus modes: Academic/Writing/Wolfram",
+    "Keep queries focused"
+  ],
+  "antiPatterns": [
+    "Conversational",
+    "Vague",
+    "Few-shot examples"
+  ],
+  "wordCount": "20-40 words"
+}

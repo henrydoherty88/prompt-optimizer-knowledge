@@ -1,0 +1,14 @@
+{
+  "name": "Structured Output",
+  "when": [
+    "API usage",
+    "Data extraction",
+    "Parseable results"
+  ],
+  "methods": {
+    "openai": "response_format with JSON schema",
+    "claude": "XML tags + prefill",
+    "gemini": "JSON mode"
+  },
+  "impact": "95%+ reliability vs 60-70%"
+}

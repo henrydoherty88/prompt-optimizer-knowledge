@@ -1,0 +1,30 @@
+{
+  "description": "History of prompt optimizations",
+  "usage": "Track optimization patterns over time",
+  "schema": {
+    "sessions": [
+      {
+        "session_id": "session_001",
+        "date": "2025-11-10",
+        "duration_minutes": 15,
+        "prompts_optimized": 3,
+        "tools_used": [
+          "claude_chat",
+          "chatgpt_chat"
+        ],
+        "frameworks_applied": [
+          "CRISPE",
+          "RTF"
+        ],
+        "average_quality_improvement": 65,
+        "notes": "Focused on improving research prompts"
+      }
+    ],
+    "trends": {
+      "most_improved_area": "",
+      "common_issues_fixed": [],
+      "favorite_frameworks": [],
+      "optimization_velocity": 0
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "Gemini (Conversational)",
+  "category": "chat",
+  "bestFor": [
+    "Multimodal",
+    "Google integration",
+    "Video analysis",
+    "1M context"
+  ],
+  "mustInclude": [
+    "Objective",
+    "Context",
+    "Approach"
+  ],
+  "template": "Objective: [goal] Context: [situation] Approach: [method] Constraints: [rules]",
+  "frameworks": [
+    "RTF",
+    "STAR"
+  ],
+  "techniques": [
+    "multimodal",
+    "structured_output"
+  ],
+  "tips": [
+    "Images/video/audio native",
+    "Google Workspace integration",
+    "1M token context window",
+    "Good for grounded responses"
+  ],
+  "antiPatterns": [
+    "Overly complex",
+    "Missing context"
+  ]
+}

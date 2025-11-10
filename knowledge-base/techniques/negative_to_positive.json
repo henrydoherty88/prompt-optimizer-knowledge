@@ -1,0 +1,9 @@
+{
+  "name": "Negative to Positive",
+  "when": [
+    "User says don't/avoid/no/never"
+  ],
+  "why": "Models bad at negatives (-22% adherence)",
+  "fix": "Reframe as positive affirmative",
+  "impact": "+22% constraint adherence"
+}

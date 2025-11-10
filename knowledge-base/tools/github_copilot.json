@@ -1,0 +1,24 @@
+{
+  "name": "GitHub Copilot",
+  "category": "coding",
+  "bestFor": [
+    "Inline completion",
+    "Test generation",
+    "Documentation",
+    "Boilerplate"
+  ],
+  "mustInclude": [
+    "Detailed comments",
+    "Edge cases",
+    "Expected behavior"
+  ],
+  "template": "// [What code does]\n// Handle: [edge cases]\n// Return: [output]\n// Error: [handling]",
+  "frameworks": [
+    "APE"
+  ],
+  "tips": [
+    "Comment before code",
+    "Chat for debugging",
+    "Great for tests"
+  ]
+}

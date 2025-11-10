@@ -1,0 +1,111 @@
+{
+  "version": "2.0-MODULAR",
+  "generated": "2025-11-10",
+  "description": "Modular prompt engineering knowledge base from 100K+ words across 13 research sources",
+  "structure": {
+    "tools": 18,
+    "frameworks": 7,
+    "techniques": 8,
+    "personal_library": 4
+  },
+  "sources": 13,
+  "fileSize": "~500KB distributed across 39 files",
+  "usage": "Fetch individual modules via GitHub API or clone entire repository",
+
+  "universalPrinciples": {
+    "specificity": {
+      "impact": "+40-50% quality and relevance",
+      "rule": "Specific > Vague always",
+      "dimensions": [
+        "Quantitative",
+        "Temporal",
+        "Qualitative",
+        "Contextual",
+        "Structural"
+      ],
+      "addMetrics": true,
+      "addTimeframes": true,
+      "addConstraints": true,
+      "addExamples": true
+    },
+    "negativeToPositive": {
+      "impact": "+22% constraint adherence",
+      "rule": "Reframe negatives as positive affirmatives",
+      "badWords": [
+        "don't",
+        "avoid",
+        "no",
+        "never"
+      ],
+      "method": "Convert 'don't X' to 'do Y instead'"
+    },
+    "contextFirst": {
+      "rule": "Front-load all reusable context",
+      "impact": "90% cost savings with caching",
+      "structure": "System/Context first → Varying task second"
+    },
+    "outputFormat": {
+      "rule": "Always specify exact format",
+      "impact": "95%+ vs 60-70% reliability",
+      "methods": [
+        "JSON schema",
+        "XML",
+        "Template",
+        "Examples"
+      ]
+    }
+  },
+
+  "qualityMetrics": {
+    "specificity": {
+      "low": "0-30: Vague, generic",
+      "medium": "31-60: Some specifics",
+      "high": "61-100: Precise, quantified"
+    },
+    "clarity": {
+      "low": "0-30: Confusing, contradictory",
+      "medium": "31-60: Generally clear",
+      "high": "61-100: Crystal clear"
+    },
+    "completeness": {
+      "low": "0-30: Missing critical elements",
+      "medium": "31-60: Has essentials",
+      "high": "61-100: Nothing missing"
+    },
+    "structure": {
+      "low": "0-30: Disorganized",
+      "medium": "31-60: Basic organization",
+      "high": "61-100: Well-structured"
+    }
+  },
+
+  "commonIssues": {
+    "vagueness": {
+      "problem": "Too short, generic, lacks specifics",
+      "fix": "Add specific details, metrics, context, constraints",
+      "impact": "-47% quality"
+    },
+    "missing_context": {
+      "problem": "Assumes model knows background",
+      "fix": "Explicitly provide all necessary background",
+      "impact": "Unpredictable outputs"
+    },
+    "negative_constraints": {
+      "problem": "Using don't, avoid, no - models ignore",
+      "fix": "Reframe as positive affirmative instructions",
+      "impact": "-22% adherence"
+    },
+    "no_output_format": {
+      "problem": "Doesn't specify output structure",
+      "fix": "Specify exact format",
+      "impact": "Inconsistent outputs"
+    }
+  },
+
+  "repository": {
+    "owner": "henrydoherty88",
+    "name": "prompt-optimizer-knowledge",
+    "url": "https://github.com/henrydoherty88/prompt-optimizer-knowledge",
+    "rawBaseUrl": "https://raw.githubusercontent.com/henrydoherty88/prompt-optimizer-knowledge/main/"
+  }
+}

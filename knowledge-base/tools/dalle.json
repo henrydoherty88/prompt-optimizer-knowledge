@@ -1,0 +1,34 @@
+{
+  "name": "DALL-E 4 (GPT-4o)",
+  "category": "creative",
+  "bestFor": [
+    "Photorealism",
+    "Text in images",
+    "Product photos",
+    "Anatomical accuracy"
+  ],
+  "mustInclude": [
+    "Detailed description",
+    "Composition",
+    "Text content"
+  ],
+  "template": "[Natural description] Subject: [details] Setting: [environment] Style: [approach] Lighting: [setup] Camera: [lens/angle] Composition: [framing] Text: ['exact text'] Quality: [specs]",
+  "techniques": [
+    "specificity",
+    "natural_language"
+  ],
+  "wordCount": "50-100 words",
+  "promptAdherence": "95%+",
+  "tips": [
+    "Write naturally - system optimizes",
+    "Best anatomical accuracy",
+    "Excellent text rendering",
+    "Specify exact text in quotes",
+    "Technical camera/lighting details"
+  ],
+  "antiPatterns": [
+    "Too short",
+    "No technical details",
+    "Midjourney syntax"
+  ]
+}

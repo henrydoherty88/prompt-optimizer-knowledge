@@ -1,0 +1,43 @@
+{
+  "name": "Midjourney v7",
+  "category": "creative",
+  "bestFor": [
+    "Artistic",
+    "Stylized",
+    "High aesthetic"
+  ],
+  "mustInclude": [
+    "Subject first 5 words",
+    "Style",
+    "Technical",
+    "Parameters"
+  ],
+  "template": "[Subject] :: [Setting] :: [Style] :: [Technical] --ar [ratio] --s [0-1000] --q [1-2] --no [exclusions]",
+  "techniques": [
+    "specificity",
+    "negative_prompts",
+    "weighting"
+  ],
+  "wordCount": "15-30 optimal",
+  "wordWeighting": "Words 1-5: 40%, 6-15: 35%, 16-30: 20%, 31+: 5%",
+  "parameters": {
+    "ar": "Aspect ratio (16:9, 9:16, 1:1, 3:2, 4:3)",
+    "s": "Stylization 0-1000 (0=real, 250=business, 600=art, 750+=experimental)",
+    "q": "Quality (1=default, 2=higher detail, 2x cost)",
+    "chaos": "Variety 0-100 (0=consistent, 50=balanced, 75+=wild)",
+    "seed": "Reproducibility - same seed = similar output",
+    "no": "Negatives: blurry, watermark, text, people, modern"
+  },
+  "tips": [
+    "First 5 words = 40% weight",
+    ":: separates concepts",
+    "Artist names for style",
+    "Always use --no"
+  ],
+  "antiPatterns": [
+    ">30 words",
+    "Readable text",
+    "No negatives",
+    "Vague adjectives"
+  ]
+}

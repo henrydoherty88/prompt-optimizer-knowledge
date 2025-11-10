@@ -1,0 +1,17 @@
+{
+  "name": "Situation, Task, Action, Result",
+  "complexity": "Medium",
+  "bestFor": [
+    "Problem-solving",
+    "Advice",
+    "Process descriptions"
+  ],
+  "components": [
+    "Situation",
+    "Task",
+    "Action",
+    "Result"
+  ],
+  "template": "Situation: [context] Task: [objective] Action: [steps] Result: [expected outcome]",
+  "whenToUse": "Describing problems, solutions, or processes with clear outcomes"
+}

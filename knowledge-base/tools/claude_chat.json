@@ -1,0 +1,38 @@
+{
+  "name": "Claude (Conversational)",
+  "category": "chat",
+  "bestFor": [
+    "Long context (200K+)",
+    "Document analysis",
+    "Complex reasoning",
+    "Creative writing"
+  ],
+  "mustInclude": [
+    "Role",
+    "Context",
+    "Constraints"
+  ],
+  "template": "You are [role]. Context: [situation] Task: [objective] Constraints: [boundaries] Output: [format]",
+  "frameworks": [
+    "CRISPE",
+    "RISEN",
+    "CO-STAR"
+  ],
+  "techniques": [
+    "role_prompting",
+    "chain_of_thought",
+    "xml_structure"
+  ],
+  "tips": [
+    "Use XML tags: <context></context> for structure",
+    "200K context - can handle full codebases",
+    "'Let's think step by step' for reasoning",
+    "Artifacts for code/documents"
+  ],
+  "antiPatterns": [
+    "Vague roles",
+    "No context",
+    "Assuming knowledge"
+  ],
+  "wordCount": "flexible"
+}

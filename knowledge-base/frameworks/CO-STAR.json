@@ -1,0 +1,19 @@
+{
+  "name": "Context, Objective, Style, Tone, Audience, Response",
+  "complexity": "Medium-High",
+  "bestFor": [
+    "Content creation",
+    "Marketing",
+    "Audience-targeted writing"
+  ],
+  "components": [
+    "Context",
+    "Objective",
+    "Style",
+    "Tone",
+    "Audience",
+    "Response"
+  ],
+  "template": "Context: [background] Objective: [goal] Style: [approach] Tone: [emotional] Audience: [demographic] Response: [format/length/structure]",
+  "whenToUse": "Content needing to resonate with specific audience"
+}

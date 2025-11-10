@@ -1,0 +1,19 @@
+{
+  "name": "Context, Role, Instruction, Specification, Performance, Example",
+  "complexity": "High",
+  "bestFor": [
+    "Technical tasks",
+    "Business analysis",
+    "Complex requirements"
+  ],
+  "components": [
+    "Context",
+    "Role",
+    "Instruction",
+    "Specification",
+    "Performance",
+    "Example"
+  ],
+  "template": "Context: [situation] Role: [expert] Instruction: [task] Specification: [requirements] Performance: [success criteria] Example: [reference]",
+  "whenToUse": "Complex professional tasks requiring precision"
+}

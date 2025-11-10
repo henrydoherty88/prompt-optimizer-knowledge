@@ -1,0 +1,28 @@
+{
+  "description": "User preferences for prompt optimization",
+  "schema": {
+    "default_tool": "claude_chat",
+    "preferred_frameworks": [
+      "CRISPE",
+      "RTF"
+    ],
+    "preferred_techniques": [
+      "specificity",
+      "chain_of_thought",
+      "structured_output"
+    ],
+    "writing_style": {
+      "tone": "professional",
+      "verbosity": "concise",
+      "technical_level": "intermediate"
+    },
+    "optimization_goals": [
+      "clarity",
+      "specificity",
+      "completeness"
+    ],
+    "auto_suggest_frameworks": true,
+    "auto_detect_issues": true,
+    "show_quality_scores": true
+  }
+}

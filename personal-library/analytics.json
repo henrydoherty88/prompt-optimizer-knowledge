@@ -1,0 +1,40 @@
+{
+  "description": "Template for tracking prompt optimization analytics",
+  "usage": "Track which optimizations lead to best results",
+  "schema": {
+    "optimizations": [
+      {
+        "id": "opt_001",
+        "date": "2025-11-10",
+        "original_prompt": "Write an article",
+        "optimized_prompt": "You are an expert technical writer. Write a 1500-word article about [topic]. Target audience: [audience]. Tone: professional. Include: introduction, 3 main sections, conclusion. Format: markdown with H2 headers.",
+        "tool": "chatgpt_chat",
+        "framework": "RTF",
+        "techniques_applied": [
+          "specificity",
+          "role_prompting",
+          "structured_output"
+        ],
+        "quality_before": {
+          "specificity": 20,
+          "clarity": 30,
+          "completeness": 25
+        },
+        "quality_after": {
+          "specificity": 85,
+          "clarity": 90,
+          "completeness": 88
+        },
+        "result_quality": "excellent",
+        "notes": "Adding specificity and structure improved output significantly"
+      }
+    ],
+    "statistics": {
+      "total_optimizations": 0,
+      "average_quality_improvement": 0,
+      "most_used_framework": "",
+      "most_used_technique": "",
+      "success_rate": 0
+    }
+  }
+}

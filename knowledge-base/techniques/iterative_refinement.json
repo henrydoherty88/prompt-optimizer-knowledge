@@ -1,0 +1,13 @@
+{
+  "name": "Iterative Refinement",
+  "when": [
+    "Complex tasks",
+    "Research depth",
+    "Creative work"
+  ],
+  "patterns": {
+    "progressive": "Broad → narrow → specific",
+    "critique": "Generate → critique → revise",
+    "parallel": "Options → compare → synthesize"
+  }
+}

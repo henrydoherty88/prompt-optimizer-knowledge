@@ -1,0 +1,25 @@
+{
+  "description": "Template for saving custom prompt examples",
+  "usage": "Save your own successful prompts for future reference",
+  "schema": {
+    "example_id": "example_001",
+    "title": "Descriptive title for this example",
+    "category": "chat | research | coding | creative",
+    "tool": "Tool name from knowledge-base/tools/",
+    "framework": "Framework name from knowledge-base/frameworks/",
+    "techniques": [
+      "List of techniques used"
+    ],
+    "prompt": "The actual prompt text that worked well",
+    "context": "When and why this prompt was effective",
+    "output_quality": "Description of the results",
+    "tags": [
+      "keyword1",
+      "keyword2"
+    ],
+    "date_created": "YYYY-MM-DD",
+    "last_used": "YYYY-MM-DD",
+    "use_count": 0,
+    "notes": "Any additional observations or lessons learned"
+  }
+}

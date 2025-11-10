@@ -1,0 +1,25 @@
+{
+  "name": "ChatGPT Deep Research",
+  "category": "research",
+  "bestFor": [
+    "Highest citation accuracy (82%)",
+    "Academic",
+    "Comprehensive"
+  ],
+  "mustInclude": [
+    "Objective",
+    "Scope",
+    "Format",
+    "Quality"
+  ],
+  "template": "Objective: [goal] Scope: [boundaries] Methodology: [approach] Output: [structure] Quality: [citations] Timeline: [complexity]",
+  "frameworks": [
+    "CRISPE"
+  ],
+  "wordCount": "60-120 words",
+  "tips": [
+    "Allow 10-30 min",
+    "Define structure",
+    "Specify citations"
+  ]
+}

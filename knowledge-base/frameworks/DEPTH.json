@@ -1,0 +1,18 @@
+{
+  "name": "Define, Establish, Provide, Task, Human",
+  "complexity": "Very High (Multi-Agent)",
+  "bestFor": [
+    "Strategic decisions",
+    "Multi-stakeholder",
+    "Complex analysis"
+  ],
+  "components": [
+    "Define Perspectives",
+    "Establish Metrics",
+    "Provide Context",
+    "Task Breakdown",
+    "Human Feedback"
+  ],
+  "template": "Perspectives: [3+ viewpoints with conflicts] Metrics: [quantifiable criteria] Context: [comprehensive background] Tasks: [sub-problems] Feedback: [iteration method]",
+  "whenToUse": "Complex strategic decisions requiring multiple viewpoints"
+}

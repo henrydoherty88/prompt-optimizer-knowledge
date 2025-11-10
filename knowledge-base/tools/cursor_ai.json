@@ -1,0 +1,31 @@
+{
+  "name": "Cursor AI",
+  "category": "coding",
+  "bestFor": [
+    "Codebase-aware",
+    "Pattern following",
+    "Multi-file",
+    "IDE integration"
+  ],
+  "mustInclude": [
+    "@ references",
+    "Changes",
+    "Patterns"
+  ],
+  "template": "In @file: [change] Maintain: [@pattern] Update: [@related] Test: [how] Context: [why]",
+  "frameworks": [
+    "RTF"
+  ],
+  "codebaseAwareness": "Best in class",
+  "tips": [
+    "@ references everything",
+    "Composer for multi-file",
+    "Inline for single edits",
+    "Follow existing patterns"
+  ],
+  "antiPatterns": [
+    "No @ refs",
+    "Vague",
+    "Ignoring patterns"
+  ]
+}

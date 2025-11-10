@@ -1,0 +1,19 @@
+{
+  "name": "Few-Shot Learning",
+  "when": [
+    "Pattern recognition",
+    "Style transfer",
+    "Classification"
+  ],
+  "how": "Provide 2-5 quality input→output examples",
+  "disable": [
+    "RAG tools",
+    "When conflicts with retrieval"
+  ],
+  "impact": "+25-35% pattern adherence",
+  "rules": [
+    "Quality > Quantity",
+    "3-5 examples optimal",
+    "Validated examples only"
+  ]
+}

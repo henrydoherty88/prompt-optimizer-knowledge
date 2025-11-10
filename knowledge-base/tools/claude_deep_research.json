@@ -1,0 +1,39 @@
+{
+  "name": "Claude Deep Research",
+  "category": "research",
+  "bestFor": [
+    "Multi-turn research",
+    "Document synthesis",
+    "Complex analysis"
+  ],
+  "mustInclude": [
+    "Research question",
+    "Scope",
+    "Analysis",
+    "Deliverable"
+  ],
+  "template": "Research Question: [specific] Scope: [boundaries] Analysis: [method] Sources: [types] Deliverable: [format with sections] Methodology: [approach]",
+  "frameworks": [
+    "RISEN",
+    "CRISPE",
+    "DEPTH"
+  ],
+  "techniques": [
+    "chain_of_thought",
+    "structured_output",
+    "iterative"
+  ],
+  "wordCount": "60-150 words",
+  "tips": [
+    "Break into sub-questions",
+    "Request evidence synthesis",
+    "Define methodology explicitly",
+    "Specify report structure",
+    "Multi-document with uploads"
+  ],
+  "antiPatterns": [
+    "Single broad question",
+    "No scope",
+    "Vague deliverable"
+  ]
+}

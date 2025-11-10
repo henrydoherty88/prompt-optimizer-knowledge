@@ -1,0 +1,24 @@
+{
+  "name": "Gemini Deep Research",
+  "category": "research",
+  "bestFor": [
+    "50+ sources",
+    "Google data",
+    "Comprehensive"
+  ],
+  "mustInclude": [
+    "Question",
+    "Synthesis",
+    "Depth"
+  ],
+  "template": "[Question] Analyze: [aspects] Synthesize: [method] Sources: [types] Depth: [level] Output: [format]",
+  "frameworks": [
+    "RISEN"
+  ],
+  "wordCount": "50-100 words",
+  "tips": [
+    "Synthesis approach",
+    "Leverage Google",
+    "Specify depth"
+  ]
+}

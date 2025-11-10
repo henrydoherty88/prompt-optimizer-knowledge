@@ -1,0 +1,11 @@
+{
+  "name": "Context Front-Loading",
+  "when": [
+    "API usage",
+    "Long conversations",
+    "Repeated tasks"
+  ],
+  "how": "Place all reusable context at beginning",
+  "impact": "90% cost reduction with caching",
+  "structure": "System: [reusable context] User: [varying task]"
+}

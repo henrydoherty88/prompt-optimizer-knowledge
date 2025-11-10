@@ -1,0 +1,14 @@
+{
+  "name": "Specificity",
+  "when": [
+    "Always - core principle"
+  ],
+  "check": [
+    "vague",
+    "generic",
+    "unclear",
+    "short"
+  ],
+  "fix": "Add metrics, timeframes, constraints, success criteria, examples",
+  "impact": "+40-50% relevance"
+}

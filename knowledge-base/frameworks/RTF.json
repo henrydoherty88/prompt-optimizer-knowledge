@@ -1,0 +1,16 @@
+{
+  "name": "Role, Task, Format",
+  "complexity": "Simple-Medium",
+  "bestFor": [
+    "General purpose",
+    "Content generation",
+    "Structured outputs"
+  ],
+  "components": [
+    "Role",
+    "Task",
+    "Format"
+  ],
+  "template": "You are [expert role]. [Task with context]. Output as [specific format].",
+  "whenToUse": "Need expertise-driven responses with specific formatting"
+}

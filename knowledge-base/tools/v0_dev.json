@@ -1,0 +1,24 @@
+{
+  "name": "V0.dev",
+  "category": "coding",
+  "bestFor": [
+    "UI components",
+    "React prototyping",
+    "shadcn/ui"
+  ],
+  "mustInclude": [
+    "Visual",
+    "Interactions",
+    "Responsive"
+  ],
+  "template": "Create [component]: [visual] Interactions: [states] Responsive: [behavior] Style: [shadcn] Data: [props]",
+  "stack": "React + TypeScript + Tailwind + shadcn/ui",
+  "frameworks": [
+    "RTF"
+  ],
+  "tips": [
+    "Describe visuals explicitly",
+    "All interaction states",
+    "Responsive behaviors"
+  ]
+}

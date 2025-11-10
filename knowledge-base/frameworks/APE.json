@@ -1,0 +1,16 @@
+{
+  "name": "Action, Purpose, Expectation",
+  "complexity": "Simple",
+  "bestFor": [
+    "Quick tasks",
+    "Simple requests",
+    "Beginners"
+  ],
+  "components": [
+    "Action",
+    "Purpose",
+    "Expectation"
+  ],
+  "template": "[Action: verb+object] [Purpose: why/goal] [Expectation: outcome/format]",
+  "whenToUse": "Tasks without extensive context or multiple steps"
+}

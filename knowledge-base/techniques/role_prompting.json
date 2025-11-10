@@ -1,0 +1,9 @@
+{
+  "name": "Role Prompting",
+  "when": [
+    "Professional/technical tasks",
+    "Expert knowledge needed"
+  ],
+  "how": "'You are expert [role] with [credentials]'",
+  "impact": "Focuses knowledge domain, adjusts expertise"
+}

@@ -1,0 +1,35 @@
+{
+  "name": "Perplexity Deep Research",
+  "category": "research",
+  "bestFor": [
+    "Web synthesis",
+    "Current data",
+    "Multi-source",
+    "Time-sensitive"
+  ],
+  "mustInclude": [
+    "Metrics",
+    "Timeframes",
+    "Source preferences"
+  ],
+  "template": "[Query with metrics] Focus: [mode] Time: [YYYY] Sources: [types] Depth: [level]",
+  "frameworks": [
+    "CRISPE"
+  ],
+  "techniques": [
+    "specificity"
+  ],
+  "wordCount": "20-50 words",
+  "tips": [
+    "Quantify everything",
+    "Specify source types",
+    "Use Focus modes",
+    "'2024-2025' not 'recent'",
+    "3-7 min processing"
+  ],
+  "antiPatterns": [
+    "Conversational",
+    "No timeframes",
+    "Vague"
+  ]
+}
