@@ -1,10 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, Copy, Save, TrendingUp, Zap, Book, BarChart3, Download, Upload } from 'lucide-react';
 
+// EMBEDDED KNOWLEDGE BASE - Fallback when GitHub fetch fails
+const EMBEDDED_KNOWLEDGE_BASE = {
+  metadata: {
+    "version": "2.0-MODULAR",
+    "generated": "2025-11-10",
+    "description": "Modular prompt engineering knowledge base from 100K+ words across 13 research sources",
+    "universalPrinciples": {
+      "specificity": {
+        "impact": "+40-50% quality and relevance",
+        "rule": "Specific > Vague always",
+        "addMetrics": true,
+        "addTimeframes": true,
+        "addConstraints": true,
+        "addExamples": true
+      },
+      "negativeToPositive": {
+        "impact": "+22% constraint adherence",
+        "rule": "Reframe negatives as positive affirmatives",
+        "badWords": ["don't", "avoid", "no", "never"],
+        "method": "Convert 'don't X' to 'do Y instead'"
+      }
+    }
+  },
+  tools: {
+    claude_chat: { name: "Claude (Conversational)", category: "chat", bestFor: ["Long context (200K+)", "Document analysis", "Complex reasoning"], mustInclude: ["Role", "Context", "Constraints"], template: "You are [role]. Context: [situation] Task: [objective] Constraints: [boundaries] Output: [format]", frameworks: ["CRISPE", "RISEN", "CO-STAR"], techniques: ["role_prompting", "chain_of_thought", "xml_structure"] },
+    chatgpt_chat: { name: "ChatGPT (Conversational)", category: "chat", bestFor: ["General queries", "Quick tasks"], mustInclude: ["Context", "Task", "Format"], frameworks: ["RTF", "STAR"] },
+    gemini_chat: { name: "Gemini (Conversational)", category: "chat", bestFor: ["Multimodal", "1M context"], mustInclude: ["Objective", "Context"], frameworks: ["RTF"] },
+    perplexity_chat: { name: "Perplexity (Quick Search)", category: "chat", bestFor: ["Current events", "Citations"], mustInclude: ["Specific query", "Timeframe"], frameworks: ["APE"] },
+    claude_deep_research: { name: "Claude Deep Research", category: "research", bestFor: ["Multi-turn research", "Document synthesis"], mustInclude: ["Research question", "Scope"], frameworks: ["RISEN", "CRISPE"] },
+    perplexity_deep_research: { name: "Perplexity Deep Research", category: "research", bestFor: ["Web synthesis"], mustInclude: ["Metrics", "Timeframes"], frameworks: ["CRISPE"] },
+    gemini_deep_research: { name: "Gemini Deep Research", category: "research", bestFor: ["50+ sources"], mustInclude: ["Question"], frameworks: ["RISEN"] },
+    chatgpt_deep_research: { name: "ChatGPT Deep Research", category: "research", bestFor: ["Highest citation accuracy"], mustInclude: ["Objective", "Scope"], frameworks: ["CRISPE"] },
+    claude_projects: { name: "Claude Projects", category: "research", bestFor: ["Multi-document"], mustInclude: ["Documents", "Analysis"], frameworks: ["CRISPE"] },
+    claude_code: { name: "Claude Code (Terminal)", category: "coding", bestFor: ["Autonomous coding", "Multi-file"], mustInclude: ["Objective", "Files", "Tech stack"], frameworks: ["CRISPE"] },
+    cursor_ai: { name: "Cursor AI", category: "coding", bestFor: ["Codebase-aware"], mustInclude: ["@ references", "Changes"], frameworks: ["RTF"] },
+    github_copilot: { name: "GitHub Copilot", category: "coding", bestFor: ["Inline completion"], mustInclude: ["Detailed comments"], frameworks: ["APE"] },
+    v0_dev: { name: "V0.dev", category: "coding", bestFor: ["UI components"], mustInclude: ["Visual", "Interactions"], frameworks: ["RTF"] },
+    midjourney: { name: "Midjourney v7", category: "creative", bestFor: ["Artistic", "Stylized"], mustInclude: ["Subject first 5 words", "Style"], techniques: ["specificity"] },
+    dalle: { name: "DALL-E 4 (GPT-4o)", category: "creative", bestFor: ["Photorealism"], mustInclude: ["Detailed description"], techniques: ["specificity"] },
+    flux: { name: "Flux Pro 1.1", category: "creative", bestFor: ["Fast iteration"], mustInclude: ["Precise description"], techniques: ["specificity"] }
+  },
+  frameworks: {
+    APE: { name: "Action, Purpose, Expectation", complexity: "Simple", components: ["Action", "Purpose", "Expectation"], template: "[Action: verb+object] [Purpose: why/goal] [Expectation: outcome/format]" },
+    RTF: { name: "Role, Task, Format", complexity: "Simple-Medium", components: ["Role", "Task", "Format"], template: "You are [expert role]. [Task with context]. Output as [specific format]." },
+    STAR: { name: "Situation, Task, Action, Result", complexity: "Medium", components: ["Situation", "Task", "Action", "Result"], template: "Situation: [context] Task: [objective] Action: [steps] Result: [expected outcome]" },
+    "CO-STAR": { name: "Context, Objective, Style, Tone, Audience, Response", complexity: "Medium-High", components: ["Context", "Objective", "Style", "Tone", "Audience", "Response"], template: "Context: [background] Objective: [goal] Style: [approach] Tone: [emotional] Audience: [demographic] Response: [format/length/structure]" },
+    CRISPE: { name: "Context, Role, Instruction, Specification, Performance, Example", complexity: "High", components: ["Context", "Role", "Instruction", "Specification", "Performance", "Example"], template: "Context: [situation] Role: [expert] Instruction: [task] Specification: [requirements] Performance: [success criteria] Example: [reference]" },
+    RISEN: { name: "Role, Instruction, Steps, Examples, Nuance", complexity: "High", components: ["Role", "Instruction", "Steps", "Examples", "Nuance"], template: "Role: [expert] Instruction: [task] Steps: [process] Examples: [2-3 samples] Nuance: [constraints/edge cases]" },
+    DEPTH: { name: "Define, Establish, Provide, Task, Human", complexity: "Very High", components: ["Define Perspectives", "Establish Metrics", "Provide Context", "Task Breakdown", "Human Feedback"], template: "Perspectives: [3+ viewpoints] Metrics: [criteria] Context: [background] Tasks: [sub-problems] Feedback: [iteration method]" }
+  },
+  techniques: {
+    chain_of_thought: { name: "Chain of Thought", when: ["Complex reasoning", "Math"], how: "'Let's think step by step'", impact: "+30-40% accuracy" },
+    specificity: { name: "Specificity", when: ["Always"], fix: "Add metrics, timeframes, constraints", impact: "+40-50% relevance" },
+    negative_to_positive: { name: "Negative to Positive", when: ["User says don't/avoid"], fix: "Reframe as positive", impact: "+22% adherence" },
+    role_prompting: { name: "Role Prompting", when: ["Professional tasks"], how: "'You are expert [role]'" },
+    few_shot: { name: "Few-Shot Learning", when: ["Pattern recognition"], how: "Provide 2-5 examples", impact: "+25-35% adherence" },
+    structured_output: { name: "Structured Output", when: ["API usage"], impact: "95%+ reliability" },
+    iterative_refinement: { name: "Iterative Refinement", when: ["Complex tasks"] },
+    context_front_loading: { name: "Context Front-Loading", when: ["API usage"], impact: "90% cost reduction" }
+  },
+  personalLibrary: { schema: { optimizations: [], statistics: {} } },
+  preferences: {}
+};
+
 const PromptOptimizer = () => {
   // State Management
   const [knowledgeBase, setKnowledgeBase] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [inputPrompt, setInputPrompt] = useState('');
   const [optimizedPrompt, setOptimizedPrompt] = useState('');
   const [analysis, setAnalysis] = useState(null);
@@ -33,14 +98,19 @@ const PromptOptimizer = () => {
   }, [inputPrompt, knowledgeBase]);
 
   const loadKnowledgeBase = async () => {
+    console.log('🔄 Loading knowledge base...');
+    setLoading(true);
+    setLoadError(null);
+
     try {
-      setLoading(true);
+      // Try to fetch from GitHub first
+      console.log('📡 Attempting GitHub fetch...');
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Fetch timeout')), 5000)
+      );
 
-      // Parallel fetch all files
-      const [metadata, ...rest] = await Promise.all([
+      const fetchPromise = Promise.all([
         fetch(`${REPO_BASE}metadata.json`).then(r => r.json()),
-
-        // Tools (16 files)
         fetch(`${REPO_BASE}knowledge-base/tools/claude_chat.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/tools/chatgpt_chat.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/tools/gemini_chat.json`).then(r => r.json()),
@@ -57,8 +127,6 @@ const PromptOptimizer = () => {
         fetch(`${REPO_BASE}knowledge-base/tools/midjourney.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/tools/dalle.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/tools/flux.json`).then(r => r.json()),
-
-        // Frameworks (7 files)
         fetch(`${REPO_BASE}knowledge-base/frameworks/APE.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/frameworks/RTF.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/frameworks/STAR.json`).then(r => r.json()),
@@ -66,8 +134,6 @@ const PromptOptimizer = () => {
         fetch(`${REPO_BASE}knowledge-base/frameworks/CRISPE.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/frameworks/RISEN.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/frameworks/DEPTH.json`).then(r => r.json()),
-
-        // Techniques (8 files)
         fetch(`${REPO_BASE}knowledge-base/techniques/chain_of_thought.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/techniques/specificity.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/techniques/negative_to_positive.json`).then(r => r.json()),
@@ -75,62 +141,50 @@ const PromptOptimizer = () => {
         fetch(`${REPO_BASE}knowledge-base/techniques/few_shot.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/techniques/structured_output.json`).then(r => r.json()),
         fetch(`${REPO_BASE}knowledge-base/techniques/iterative_refinement.json`).then(r => r.json()),
-        fetch(`${REPO_BASE}knowledge-base/techniques/context_front_loading.json`).then(r => r.json()),
-
-        // Personal Library
-        fetch(`${REPO_BASE}personal-library/analytics.json`).then(r => r.json()).catch(() => ({ schema: { optimizations: [], statistics: {} } })),
-        fetch(`${REPO_BASE}personal-library/preferences.json`).then(r => r.json()).catch(() => ({}))
+        fetch(`${REPO_BASE}knowledge-base/techniques/context_front_loading.json`).then(r => r.json())
       ]);
+
+      const [metadata, ...rest] = await Promise.race([fetchPromise, timeout]);
 
       const kb = {
         metadata,
         tools: {
-          claude_chat: rest[0],
-          chatgpt_chat: rest[1],
-          gemini_chat: rest[2],
-          perplexity_chat: rest[3],
-          claude_deep_research: rest[4],
-          perplexity_deep_research: rest[5],
-          chatgpt_deep_research: rest[6],
-          gemini_deep_research: rest[7],
-          claude_projects: rest[8],
-          claude_code: rest[9],
-          cursor_ai: rest[10],
-          github_copilot: rest[11],
-          v0_dev: rest[12],
-          midjourney: rest[13],
-          dalle: rest[14],
-          flux: rest[15]
+          claude_chat: rest[0], chatgpt_chat: rest[1], gemini_chat: rest[2],
+          perplexity_chat: rest[3], claude_deep_research: rest[4],
+          perplexity_deep_research: rest[5], chatgpt_deep_research: rest[6],
+          gemini_deep_research: rest[7], claude_projects: rest[8],
+          claude_code: rest[9], cursor_ai: rest[10], github_copilot: rest[11],
+          v0_dev: rest[12], midjourney: rest[13], dalle: rest[14], flux: rest[15]
         },
         frameworks: {
-          APE: rest[16],
-          RTF: rest[17],
-          STAR: rest[18],
-          'CO-STAR': rest[19],
-          CRISPE: rest[20],
-          RISEN: rest[21],
-          DEPTH: rest[22]
+          APE: rest[16], RTF: rest[17], STAR: rest[18], 'CO-STAR': rest[19],
+          CRISPE: rest[20], RISEN: rest[21], DEPTH: rest[22]
         },
         techniques: {
-          chain_of_thought: rest[23],
-          specificity: rest[24],
-          negative_to_positive: rest[25],
-          role_prompting: rest[26],
-          few_shot: rest[27],
-          structured_output: rest[28],
-          iterative_refinement: rest[29],
-          context_front_loading: rest[30]
+          chain_of_thought: rest[23], specificity: rest[24],
+          negative_to_positive: rest[25], role_prompting: rest[26],
+          few_shot: rest[27], structured_output: rest[28],
+          iterative_refinement: rest[29], context_front_loading: rest[30]
         },
-        personalLibrary: rest[31],
-        preferences: rest[32]
+        personalLibrary: { schema: { optimizations: [], statistics: {} } },
+        preferences: {}
       };
 
+      console.log('✅ GitHub fetch successful!');
       setKnowledgeBase(kb);
-      setAnalytics(kb.personalLibrary.schema || { optimizations: [], statistics: {} });
+      setAnalytics(kb.personalLibrary.schema);
       setLoading(false);
+
     } catch (error) {
-      console.error('Error loading knowledge base:', error);
+      // Fallback to embedded knowledge base
+      console.warn('⚠️ GitHub fetch failed, using embedded knowledge base:', error.message);
+      console.log('💾 Loading embedded fallback...');
+
+      setLoadError('Using offline mode (GitHub fetch failed)');
+      setKnowledgeBase(EMBEDDED_KNOWLEDGE_BASE);
+      setAnalytics(EMBEDDED_KNOWLEDGE_BASE.personalLibrary.schema);
       setLoading(false);
+      console.log('✅ Embedded knowledge base loaded successfully!');
     }
   };
 
@@ -1240,8 +1294,9 @@ ${prompt.includes('step') ? 'Follow the steps above systematically.' : 'Approach
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-xl text-gray-700">Loading Knowledge Base...</p>
-          <p className="text-sm text-gray-500 mt-2">Fetching 37 files from GitHub</p>
+          <p className="text-xl text-gray-700 font-semibold">Loading Knowledge Base...</p>
+          <p className="text-sm text-gray-500 mt-2">📡 Trying GitHub (37 files)...</p>
+          <p className="text-xs text-gray-400 mt-1">💾 Embedded fallback available if needed</p>
         </div>
       </div>
     );
@@ -1353,8 +1408,14 @@ ${prompt.includes('step') ? 'Follow the steps above systematically.' : 'Approach
                 <Zap size={24} />
                 {isOptimizing ? 'Optimizing...' : 'Optimize Prompt'}
               </button>
-              {!knowledgeBase && (
-                <p className="text-xs text-red-600 mt-2">⚠️ Loading knowledge base...</p>
+              {loadError && (
+                <div className="mt-3 p-3 bg-yellow-50 border border-yellow-300 rounded-lg">
+                  <p className="text-xs text-yellow-800">💾 {loadError}</p>
+                  <p className="text-xs text-yellow-600 mt-1">Optimization still works normally!</p>
+                </div>
+              )}
+              {!knowledgeBase && !loadError && (
+                <p className="text-xs text-blue-600 mt-2">📡 Loading knowledge base from GitHub...</p>
               )}
             </div>
           </div>
